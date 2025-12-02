@@ -1,0 +1,16 @@
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\bin\Debug\net8.0\EczaneOtomasyon.Business.deps.json
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\bin\Debug\net8.0\EczaneOtomasyon.Business.dll
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\bin\Debug\net8.0\EczaneOtomasyon.Business.pdb
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\bin\Debug\net8.0\EczaneOtomasyon.DataAccess.dll
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\bin\Debug\net8.0\EczaneOtomasyon.DataAccess.pdb
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\EczaneOtomasyon.Business.csproj.AssemblyReference.cache
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\EczaneOtomasyon.Business.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\EczaneOtomasyon.Business.AssemblyInfoInputs.cache
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\EczaneOtomasyon.Business.AssemblyInfo.cs
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\EczaneOtomasyon.Business.csproj.CoreCompileInputs.cache
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\EczaneOtomasyon.Business.sourcelink.json
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\EczaneOt.3C079EBA.Up2Date
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\EczaneOtomasyon.Business.dll
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\refint\EczaneOtomasyon.Business.dll
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\EczaneOtomasyon.Business.pdb
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.Business\obj\Debug\net8.0\ref\EczaneOtomasyon.Business.dll

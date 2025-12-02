@@ -1,0 +1,13 @@
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\bin\Debug\net8.0\EczaneOtomasyon.DataAccess.deps.json
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\bin\Debug\net8.0\EczaneOtomasyon.DataAccess.dll
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\bin\Debug\net8.0\EczaneOtomasyon.DataAccess.pdb
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\obj\Debug\net8.0\EczaneOtomasyon.DataAccess.csproj.AssemblyReference.cache
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\obj\Debug\net8.0\EczaneOtomasyon.DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\obj\Debug\net8.0\EczaneOtomasyon.DataAccess.AssemblyInfoInputs.cache
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\obj\Debug\net8.0\EczaneOtomasyon.DataAccess.AssemblyInfo.cs
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\obj\Debug\net8.0\EczaneOtomasyon.DataAccess.csproj.CoreCompileInputs.cache
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\obj\Debug\net8.0\EczaneOtomasyon.DataAccess.sourcelink.json
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\obj\Debug\net8.0\EczaneOtomasyon.DataAccess.dll
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\obj\Debug\net8.0\refint\EczaneOtomasyon.DataAccess.dll
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\obj\Debug\net8.0\EczaneOtomasyon.DataAccess.pdb
+C:\Users\lenovo\Desktop\projects\eczaneotomasyonu\EczaneOtomasyon\EczaneOtomasyon.DataAccess\obj\Debug\net8.0\ref\EczaneOtomasyon.DataAccess.dll
