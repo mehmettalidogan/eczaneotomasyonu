@@ -8,8 +8,9 @@ namespace EczaneOtomasyon.DataAccess
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // SQL Server yerine geçici olarak InMemory veritabanı kullanıyoruz.
-            optionsBuilder.UseInMemoryDatabase("EczaneOtomasyonDb");
+            // Gerçek SQL Server bağlantısı (SQLEXPRESS)
+            // TrustServerCertificate=True: SSL sertifika hatasını önler (özellikle yeni SQL sürümlerinde)
+            optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=EczaneOtomasyonDb;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
 }
