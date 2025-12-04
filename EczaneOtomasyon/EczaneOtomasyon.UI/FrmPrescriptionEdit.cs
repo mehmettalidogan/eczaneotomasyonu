@@ -68,6 +68,16 @@ namespace EczaneOtomasyon.UI
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            SavePrescription(false);
+        }
+
+        private void btnSaveAndSell_Click(object sender, EventArgs e)
+        {
+            SavePrescription(true);
+        }
+
+        private void SavePrescription(bool isSale)
+        {
             // Validasyonlar
             if (string.IsNullOrWhiteSpace(txtPrescriptionNumber.Text))
             {
@@ -140,13 +150,40 @@ namespace EczaneOtomasyon.UI
                     DailyDoseMg = i.DailyDoseMg
                 }).ToList();
 
-                _checker.SavePrescription(prescription, dbItems);
-                XtraMessageBox.Show("Reçete başarıyla oluşturuldu.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (isSale)
+                {
+                    // Toplam tutarı hesapla
+                    decimal totalAmount = 0;
+                    foreach (var item in itemList)
+                    {
+                        var drug = _drugService.GetAll().FirstOrDefault(d => d.Id == item.DrugId);
+                        if (drug != null)
+                        {
+                            totalAmount += drug.Price;
+                        }
+                    }
+
+                    _checker.SavePrescriptionWithSale(prescription, dbItems, totalAmount);
+                    XtraMessageBox.Show($"Reçete başarıyla oluşturuldu ve satış gerçekleştirildi!\n\nToplam Tutar: {totalAmount:C2}", 
+                        "Satış Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    _checker.SavePrescription(prescription, dbItems);
+                    XtraMessageBox.Show("Reçete başarıyla kaydedildi.", "Başarılı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                
                 this.Close();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Hata: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Detaylı hata mesajı
+                var errorMessage = $"Hata: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $"\n\nDetay: {ex.InnerException.Message}";
+                }
+                XtraMessageBox.Show(errorMessage, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

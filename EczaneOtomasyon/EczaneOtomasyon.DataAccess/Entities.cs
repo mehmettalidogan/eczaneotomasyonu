@@ -13,6 +13,12 @@ namespace EczaneOtomasyon.DataAccess
         public string PatientTC { get; set; } = string.Empty;
         public int PatientAge { get; set; }
         public DateTime Date { get; set; }
+        
+        // Satış Bilgileri
+        public bool IsSold { get; set; } = false;
+        public DateTime? SaleDate { get; set; }
+        public decimal TotalAmount { get; set; } = 0;
+        public string SaleStatus { get; set; } = "Bekliyor"; // "Bekliyor", "Satıldı"
     }
 
     public class PrescriptionItem

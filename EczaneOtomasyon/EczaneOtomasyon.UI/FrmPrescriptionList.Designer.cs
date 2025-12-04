@@ -29,9 +29,13 @@ namespace EczaneOtomasyon.UI
             this.colPatientTC = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colPatientAge = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colSaleStatus = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colTotalAmount = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colSaleDate = new DevExpress.XtraGrid.Columns.GridColumn();
             this.panelBottom = new DevExpress.XtraEditors.PanelControl();
             this.btnClose = new DevExpress.XtraEditors.SimpleButton();
             this.btnViewDetails = new DevExpress.XtraEditors.SimpleButton();
+            this.btnSellPrescription = new DevExpress.XtraEditors.SimpleButton();
 
             ((System.ComponentModel.ISupportInitialize)(this.panelTop)).BeginInit();
             this.panelTop.SuspendLayout();
@@ -96,7 +100,10 @@ namespace EczaneOtomasyon.UI
             this.colPatientSurname,
             this.colPatientTC,
             this.colPatientAge,
-            this.colDate});
+            this.colDate,
+            this.colSaleStatus,
+            this.colTotalAmount,
+            this.colSaleDate});
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsBehavior.Editable = false;
@@ -167,25 +174,75 @@ namespace EczaneOtomasyon.UI
             // 
             // colDate
             // 
-            this.colDate.Caption = "Tarih";
+            this.colDate.Caption = "Reçete Tarihi";
             this.colDate.DisplayFormat.FormatString = "dd.MM.yyyy HH:mm";
             this.colDate.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
             this.colDate.FieldName = "Date";
             this.colDate.Name = "colDate";
             this.colDate.Visible = true;
             this.colDate.VisibleIndex = 5;
-            this.colDate.Width = 150;
+            this.colDate.Width = 120;
+
+            // 
+            // colSaleStatus
+            // 
+            this.colSaleStatus.Caption = "Satış Durumu";
+            this.colSaleStatus.FieldName = "SaleStatus";
+            this.colSaleStatus.Name = "colSaleStatus";
+            this.colSaleStatus.Visible = true;
+            this.colSaleStatus.VisibleIndex = 6;
+            this.colSaleStatus.Width = 100;
+
+            // 
+            // colTotalAmount
+            // 
+            this.colTotalAmount.Caption = "Toplam Tutar";
+            this.colTotalAmount.DisplayFormat.FormatString = "c2";
+            this.colTotalAmount.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.colTotalAmount.FieldName = "TotalAmount";
+            this.colTotalAmount.Name = "colTotalAmount";
+            this.colTotalAmount.Visible = true;
+            this.colTotalAmount.VisibleIndex = 7;
+            this.colTotalAmount.Width = 100;
+
+            // 
+            // colSaleDate
+            // 
+            this.colSaleDate.Caption = "Satış Tarihi";
+            this.colSaleDate.DisplayFormat.FormatString = "dd.MM.yyyy HH:mm";
+            this.colSaleDate.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            this.colSaleDate.FieldName = "SaleDate";
+            this.colSaleDate.Name = "colSaleDate";
+            this.colSaleDate.Visible = true;
+            this.colSaleDate.VisibleIndex = 8;
+            this.colSaleDate.Width = 120;
 
             // 
             // panelBottom
             // 
             this.panelBottom.Controls.Add(this.btnClose);
             this.panelBottom.Controls.Add(this.btnViewDetails);
+            this.panelBottom.Controls.Add(this.btnSellPrescription);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBottom.Location = new System.Drawing.Point(0, 500);
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(1000, 60);
             this.panelBottom.TabIndex = 2;
+
+            // 
+            // btnSellPrescription
+            // 
+            this.btnSellPrescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSellPrescription.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.btnSellPrescription.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.btnSellPrescription.Appearance.Options.UseBackColor = true;
+            this.btnSellPrescription.Appearance.Options.UseFont = true;
+            this.btnSellPrescription.Location = new System.Drawing.Point(520, 15);
+            this.btnSellPrescription.Name = "btnSellPrescription";
+            this.btnSellPrescription.Size = new System.Drawing.Size(150, 30);
+            this.btnSellPrescription.TabIndex = 2;
+            this.btnSellPrescription.Text = "Reçete Sat ✓";
+            this.btnSellPrescription.Click += new System.EventHandler(this.btnSellPrescription_Click);
 
             // 
             // btnViewDetails
@@ -246,8 +303,12 @@ namespace EczaneOtomasyon.UI
         private DevExpress.XtraGrid.Columns.GridColumn colPatientTC;
         private DevExpress.XtraGrid.Columns.GridColumn colPatientAge;
         private DevExpress.XtraGrid.Columns.GridColumn colDate;
+        private DevExpress.XtraGrid.Columns.GridColumn colSaleStatus;
+        private DevExpress.XtraGrid.Columns.GridColumn colTotalAmount;
+        private DevExpress.XtraGrid.Columns.GridColumn colSaleDate;
         private DevExpress.XtraEditors.SimpleButton btnViewDetails;
         private DevExpress.XtraEditors.SimpleButton btnClose;
+        private DevExpress.XtraEditors.SimpleButton btnSellPrescription;
     }
 }
 

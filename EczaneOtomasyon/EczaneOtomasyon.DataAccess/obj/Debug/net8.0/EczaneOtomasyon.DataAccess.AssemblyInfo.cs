@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EczaneOtomasyon.DataAccess")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+02f20692f2e992b1a5df48d715cb1b5698858f5a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+84bd1ff5e5b6581d7515e1f575041e07923c5746")]
 [assembly: System.Reflection.AssemblyProductAttribute("EczaneOtomasyon.DataAccess")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EczaneOtomasyon.DataAccess")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

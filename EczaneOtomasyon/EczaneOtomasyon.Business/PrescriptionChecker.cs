@@ -271,6 +271,40 @@ namespace EczaneOtomasyon.Business
         {
             return _context.Prescriptions.FirstOrDefault(p => p.Id == id);
         }
+
+        // Satış İşlemleri
+        public void SavePrescriptionWithSale(Prescription prescription, List<PrescriptionItem> items, decimal totalAmount)
+        {
+            prescription.IsSold = true;
+            prescription.SaleDate = DateTime.Now;
+            prescription.TotalAmount = totalAmount;
+            prescription.SaleStatus = "Satıldı";
+            
+            SavePrescription(prescription, items);
+        }
+
+        public void MarkAsSold(int prescriptionId, decimal totalAmount)
+        {
+            var prescription = GetPrescriptionById(prescriptionId);
+            if (prescription != null)
+            {
+                prescription.IsSold = true;
+                prescription.SaleDate = DateTime.Now;
+                prescription.TotalAmount = totalAmount;
+                prescription.SaleStatus = "Satıldı";
+                _context.SaveChanges();
+            }
+        }
+
+        public List<Prescription> GetSoldPrescriptions()
+        {
+            return _context.Prescriptions.Where(p => p.IsSold).OrderByDescending(p => p.SaleDate).ToList();
+        }
+
+        public List<Prescription> GetPendingPrescriptions()
+        {
+            return _context.Prescriptions.Where(p => !p.IsSold).OrderByDescending(p => p.Date).ToList();
+        }
     }
 }
 

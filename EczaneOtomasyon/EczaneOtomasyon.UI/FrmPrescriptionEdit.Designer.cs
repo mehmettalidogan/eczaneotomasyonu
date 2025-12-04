@@ -28,6 +28,7 @@ namespace EczaneOtomasyon.UI
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.repositoryItemLookUpEdit1 = new DevExpress.XtraEditors.Repository.RepositoryItemLookUpEdit();
             this.btnSave = new DevExpress.XtraEditors.SimpleButton();
+            this.btnSaveAndSell = new DevExpress.XtraEditors.SimpleButton();
             this.lblPrescriptionNumber = new DevExpress.XtraEditors.LabelControl();
             this.lblName = new DevExpress.XtraEditors.LabelControl();
             this.lblSurname = new DevExpress.XtraEditors.LabelControl();
@@ -164,6 +165,7 @@ namespace EczaneOtomasyon.UI
             this.dateEdit1.TabIndex = 11;
 
             // panelBottom
+            this.panelBottom.Controls.Add(this.btnSaveAndSell);
             this.panelBottom.Controls.Add(this.btnSave);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBottom.Location = new System.Drawing.Point(0, 451);
@@ -174,12 +176,26 @@ namespace EczaneOtomasyon.UI
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(622, 10);
+            this.btnSave.Location = new System.Drawing.Point(460, 10);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(150, 30);
             this.btnSave.TabIndex = 0;
-            this.btnSave.Text = "Kaydet ve Kontrol Et";
+            this.btnSave.Text = "Kaydet";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+
+            // btnSaveAndSell
+            // 
+            this.btnSaveAndSell.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSaveAndSell.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.btnSaveAndSell.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.btnSaveAndSell.Appearance.Options.UseBackColor = true;
+            this.btnSaveAndSell.Appearance.Options.UseFont = true;
+            this.btnSaveAndSell.Location = new System.Drawing.Point(622, 10);
+            this.btnSaveAndSell.Name = "btnSaveAndSell";
+            this.btnSaveAndSell.Size = new System.Drawing.Size(150, 30);
+            this.btnSaveAndSell.TabIndex = 1;
+            this.btnSaveAndSell.Text = "Kaydet ve Sat ✓";
+            this.btnSaveAndSell.Click += new System.EventHandler(this.btnSaveAndSell_Click);
 
             // gridControl1
             // 
@@ -254,6 +270,7 @@ namespace EczaneOtomasyon.UI
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
         private DevExpress.XtraEditors.Repository.RepositoryItemLookUpEdit repositoryItemLookUpEdit1;
         private DevExpress.XtraEditors.SimpleButton btnSave;
+        private DevExpress.XtraEditors.SimpleButton btnSaveAndSell;
         private DevExpress.XtraEditors.LabelControl lblPrescriptionNumber;
         private DevExpress.XtraEditors.LabelControl lblName;
         private DevExpress.XtraEditors.LabelControl lblSurname;
