@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EczaneOtomasyon.DataAccess")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+004d614113ae67dce550fc55b4bc1054cd742d70")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cd627c4611320f2436823758d71214d13dde1859")]
 [assembly: System.Reflection.AssemblyProductAttribute("EczaneOtomasyon.DataAccess")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EczaneOtomasyon.DataAccess")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

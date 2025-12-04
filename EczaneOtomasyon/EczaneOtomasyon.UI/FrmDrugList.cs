@@ -22,6 +22,33 @@ namespace EczaneOtomasyon.UI
             UserLookAndFeel.Default.SkinName = "Office 2019 Colorful";
             
             _drugService = new DrugService();
+
+            // GridView double-click event
+            gridView1.DoubleClick += GridView1_DoubleClick;
+        }
+
+        private void GridView1_DoubleClick(object? sender, EventArgs e)
+        {
+            if (sender == null || e == null) return;
+            
+            var ea = e as DevExpress.Utils.DXMouseEventArgs;
+            var view = sender as DevExpress.XtraGrid.Views.Grid.GridView;
+            
+            if (ea == null || view == null) return;
+            
+            var info = view.CalcHitInfo(ea.Location);
+            
+            if (info.InRow || info.InRowCell)
+            {
+                var selectedRow = view.GetFocusedRow() as Drug;
+                if (selectedRow != null)
+                {
+                    using (var detailsForm = new FrmDrugDetails(selectedRow))
+                    {
+                        detailsForm.ShowDialog();
+                    }
+                }
+            }
         }
 
         protected override void OnLoad(EventArgs e)
@@ -132,6 +159,14 @@ namespace EczaneOtomasyon.UI
                     d.Name.ToLower().Contains(searchText) || 
                     d.ActiveSubstance.ToLower().Contains(searchText)).ToList();
                 gridControl1.DataSource = filtered;
+            }
+        }
+
+        private void btnNewPrescription_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            using (var frm = new FrmPrescriptionEdit())
+            {
+                frm.ShowDialog();
             }
         }
     }

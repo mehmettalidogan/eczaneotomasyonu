@@ -6,7 +6,7 @@ namespace EczaneOtomasyon.DataAccess
         public string Name { get; set; } = string.Empty;
         public string ActiveSubstance { get; set; } = string.Empty;
         public string Form { get; set; } = string.Empty;
-        public int DosageMg { get; set; }
+        public int? DosageMg { get; set; }  // Nullable yapıldı - bazı ilaçlarda doz bilgisi mg cinsinden değil
         public string Company { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
         public decimal Price { get; set; }

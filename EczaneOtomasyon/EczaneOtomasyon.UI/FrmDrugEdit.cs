@@ -24,7 +24,7 @@ namespace EczaneOtomasyon.UI
                 txtName.Text = Drug.Name;
                 txtActiveSubstance.Text = Drug.ActiveSubstance;
                 txtForm.Text = Drug.Form;
-                txtDosage.Value = Drug.DosageMg;
+                txtDosage.Value = Drug.DosageMg ?? 0; // Nullable int? to decimal conversion
                 txtCompany.Text = Drug.Company;
                 txtCategory.Text = Drug.Category;
                 txtPrice.Value = Drug.Price;
@@ -43,7 +43,7 @@ namespace EczaneOtomasyon.UI
             Drug.Name = txtName.Text;
             Drug.ActiveSubstance = txtActiveSubstance.Text;
             Drug.Form = txtForm.Text;
-            Drug.DosageMg = (int)txtDosage.Value;
+            Drug.DosageMg = txtDosage.Value > 0 ? (int?)txtDosage.Value : null; // 0 ise null olarak kaydet
             Drug.Company = txtCompany.Text;
             Drug.Category = txtCategory.Text;
             Drug.Price = txtPrice.Value;
