@@ -29,6 +29,9 @@ namespace EczaneOtomasyon.UI
             ConfigureGrid();
             LoadLookups();
             gridControl1.DataSource = _items;
+            
+            // Tarih varsayılan olarak bugün
+            dateEdit1.EditValue = DateTime.Now;
         }
 
         private void ConfigureGrid()
@@ -65,15 +68,38 @@ namespace EczaneOtomasyon.UI
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (_items.Count == 0)
+            // Validasyonlar
+            if (string.IsNullOrWhiteSpace(txtPrescriptionNumber.Text))
             {
-                XtraMessageBox.Show("Lütfen en az bir ilaç ekleyin.");
+                XtraMessageBox.Show("Reçete numarası giriniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPrescriptionNumber.Focus();
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(txtPatientName.Text))
             {
-                XtraMessageBox.Show("Hasta adı giriniz.");
+                XtraMessageBox.Show("Hasta adı giriniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPatientName.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtPatientSurname.Text))
+            {
+                XtraMessageBox.Show("Hasta soyadı giriniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPatientSurname.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtPatientTC.Text) || txtPatientTC.Text.Length != 11)
+            {
+                XtraMessageBox.Show("Geçerli bir TC Kimlik No giriniz (11 haneli).", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPatientTC.Focus();
+                return;
+            }
+
+            if (_items.Count == 0)
+            {
+                XtraMessageBox.Show("Lütfen en az bir ilaç ekleyin.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -100,7 +126,10 @@ namespace EczaneOtomasyon.UI
             {
                 var prescription = new Prescription
                 {
-                    PatientName = txtPatientName.Text,
+                    PrescriptionNumber = txtPrescriptionNumber.Text.Trim(),
+                    PatientName = txtPatientName.Text.Trim(),
+                    PatientSurname = txtPatientSurname.Text.Trim(),
+                    PatientTC = txtPatientTC.Text.Trim(),
                     PatientAge = age,
                     Date = dateEdit1.DateTime
                 };
@@ -117,7 +146,7 @@ namespace EczaneOtomasyon.UI
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Hata: {ex.Message}");
+                XtraMessageBox.Show($"Hata: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

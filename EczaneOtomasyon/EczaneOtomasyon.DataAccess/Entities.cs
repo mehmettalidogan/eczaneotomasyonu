@@ -7,7 +7,10 @@ namespace EczaneOtomasyon.DataAccess
     public class Prescription
     {
         public int Id { get; set; }
+        public string PrescriptionNumber { get; set; } = string.Empty;
         public string PatientName { get; set; } = string.Empty;
+        public string PatientSurname { get; set; } = string.Empty;
+        public string PatientTC { get; set; } = string.Empty;
         public int PatientAge { get; set; }
         public DateTime Date { get; set; }
     }

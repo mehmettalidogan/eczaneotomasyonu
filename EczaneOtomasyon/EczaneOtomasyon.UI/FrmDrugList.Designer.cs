@@ -23,10 +23,14 @@ namespace EczaneOtomasyon.UI
             this.btnAdd = new DevExpress.XtraBars.BarButtonItem();
             this.btnEdit = new DevExpress.XtraBars.BarButtonItem();
             this.btnDelete = new DevExpress.XtraBars.BarButtonItem();
+            this.btnNewPrescription = new DevExpress.XtraBars.BarButtonItem();
+            this.btnPrescriptionList = new DevExpress.XtraBars.BarButtonItem();
             this.lblTotalDrugsStatus = new DevExpress.XtraBars.BarStaticItem();
             this.lblLastUpdate = new DevExpress.XtraBars.BarStaticItem();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
+            this.ribbonPage2 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonStatusBar1 = new DevExpress.XtraBars.Ribbon.RibbonStatusBar();
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -73,13 +77,16 @@ namespace EczaneOtomasyon.UI
             this.btnAdd,
             this.btnEdit,
             this.btnDelete,
+            this.btnNewPrescription,
+            this.btnPrescriptionList,
             this.lblTotalDrugsStatus,
             this.lblLastUpdate});
             this.ribbonControl1.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl1.MaxItemId = 6;
+            this.ribbonControl1.MaxItemId = 8;
             this.ribbonControl1.Name = "ribbonControl1";
             this.ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
-            this.ribbonPage1});
+            this.ribbonPage1,
+            this.ribbonPage2});
             this.ribbonControl1.Size = new System.Drawing.Size(1100, 158);
             this.ribbonControl1.StatusBar = this.ribbonStatusBar1;
             
@@ -108,6 +115,22 @@ namespace EczaneOtomasyon.UI
             this.btnDelete.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnDelete_ItemClick);
 
             // 
+            // btnNewPrescription
+            // 
+            this.btnNewPrescription.Caption = "Yeni Reçete";
+            this.btnNewPrescription.Id = 6;
+            this.btnNewPrescription.Name = "btnNewPrescription";
+            this.btnNewPrescription.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnNewPrescription_ItemClick);
+
+            // 
+            // btnPrescriptionList
+            // 
+            this.btnPrescriptionList.Caption = "Reçete Listesi";
+            this.btnPrescriptionList.Id = 7;
+            this.btnPrescriptionList.Name = "btnPrescriptionList";
+            this.btnPrescriptionList.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnPrescriptionList_ItemClick);
+
+            // 
             // lblTotalDrugsStatus
             // 
             this.lblTotalDrugsStatus.Caption = "Toplam İlaç: 0";
@@ -131,6 +154,14 @@ namespace EczaneOtomasyon.UI
             this.ribbonPage1.Text = "İlaç Yönetimi";
             
             // 
+            // ribbonPage2
+            // 
+            this.ribbonPage2.Groups.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPageGroup[] {
+            this.ribbonPageGroup2});
+            this.ribbonPage2.Name = "ribbonPage2";
+            this.ribbonPage2.Text = "Reçete Yönetimi";
+            
+            // 
             // ribbonPageGroup1
             // 
             this.ribbonPageGroup1.ItemLinks.Add(this.btnAdd);
@@ -138,6 +169,14 @@ namespace EczaneOtomasyon.UI
             this.ribbonPageGroup1.ItemLinks.Add(this.btnDelete);
             this.ribbonPageGroup1.Name = "ribbonPageGroup1";
             this.ribbonPageGroup1.Text = "Temel İşlemler";
+
+            // 
+            // ribbonPageGroup2
+            // 
+            this.ribbonPageGroup2.ItemLinks.Add(this.btnNewPrescription);
+            this.ribbonPageGroup2.ItemLinks.Add(this.btnPrescriptionList);
+            this.ribbonPageGroup2.Name = "ribbonPageGroup2";
+            this.ribbonPageGroup2.Text = "Reçete İşlemleri";
             
             // 
             // ribbonStatusBar1
@@ -411,11 +450,15 @@ namespace EczaneOtomasyon.UI
 
         private DevExpress.XtraBars.Ribbon.RibbonControl ribbonControl1;
         private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage1;
+        private DevExpress.XtraBars.Ribbon.RibbonPage ribbonPage2;
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup1;
+        private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup2;
         private DevExpress.XtraBars.Ribbon.RibbonStatusBar ribbonStatusBar1;
         private DevExpress.XtraBars.BarButtonItem btnAdd;
         private DevExpress.XtraBars.BarButtonItem btnEdit;
         private DevExpress.XtraBars.BarButtonItem btnDelete;
+        private DevExpress.XtraBars.BarButtonItem btnNewPrescription;
+        private DevExpress.XtraBars.BarButtonItem btnPrescriptionList;
         private DevExpress.XtraBars.BarStaticItem lblTotalDrugsStatus;
         private DevExpress.XtraBars.BarStaticItem lblLastUpdate;
         private DevExpress.XtraGrid.GridControl gridControl1;

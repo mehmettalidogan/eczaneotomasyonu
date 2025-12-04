@@ -169,5 +169,13 @@ namespace EczaneOtomasyon.UI
                 frm.ShowDialog();
             }
         }
+
+        private void btnPrescriptionList_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            using (var frm = new FrmPrescriptionList())
+            {
+                frm.ShowDialog();
+            }
+        }
     }
 }
