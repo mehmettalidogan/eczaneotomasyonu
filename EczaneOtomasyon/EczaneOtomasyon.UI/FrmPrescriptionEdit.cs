@@ -14,6 +14,7 @@ namespace EczaneOtomasyon.UI
     {
         private readonly PrescriptionChecker _checker;
         private readonly DrugService _drugService;
+        private readonly StockService _stockService;
         private BindingList<PrescriptionItemDto> _items;
 
         public FrmPrescriptionEdit()
@@ -21,6 +22,7 @@ namespace EczaneOtomasyon.UI
             InitializeComponent();
             _checker = new PrescriptionChecker();
             _drugService = new DrugService();
+            _stockService = new StockService();
             _items = new BindingList<PrescriptionItemDto>();
             
             // Seed Data (İlk kullanımda tablo boşsa doldurur)
@@ -116,12 +118,23 @@ namespace EczaneOtomasyon.UI
             int age = (int)txtAge.Value;
             var itemList = _items.ToList();
 
-            // 1. Analiz
+            // 1. Stok Kontrolü
+            var drugIds = itemList.Select(i => i.DrugId).Distinct().ToList();
+            var outOfStockDrugs = _stockService.CheckPrescriptionStock(drugIds);
+            
+            if (outOfStockDrugs.Count > 0)
+            {
+                var message = "Aşağıdaki ilaçlar stokta yok:\n\n" + string.Join("\n", outOfStockDrugs);
+                XtraMessageBox.Show(message, "Stok Hatası", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // 2. Analiz
             var interactionWarnings = _checker.CheckInteractions(itemList);
             var doseWarnings = _checker.CheckDoses(itemList, age);
             var allWarnings = interactionWarnings.Concat(doseWarnings).ToList();
 
-            // 2. Uyarı varsa göster
+            // 3. Uyarı varsa göster
             if (allWarnings.Count > 0)
             {
                 using (var frmWarn = new FrmPrescriptionWarnings(allWarnings))
@@ -131,7 +144,7 @@ namespace EczaneOtomasyon.UI
                 }
             }
 
-            // 3. Kaydet
+            // 4. Kaydet
             try
             {
                 var prescription = new Prescription
@@ -152,7 +165,7 @@ namespace EczaneOtomasyon.UI
 
                 if (isSale)
                 {
-                    // Toplam tutarı hesapla
+                    // Toplam tutarı hesapla ve stokları azalt
                     decimal totalAmount = 0;
                     foreach (var item in itemList)
                     {
@@ -160,6 +173,8 @@ namespace EczaneOtomasyon.UI
                         if (drug != null)
                         {
                             totalAmount += drug.Price;
+                            // Satış yapıldığında stoğu azalt
+                            _stockService.RemoveStock(drug.Id, 1);
                         }
                     }
 

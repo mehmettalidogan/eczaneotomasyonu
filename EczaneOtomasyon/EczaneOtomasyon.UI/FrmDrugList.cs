@@ -13,6 +13,8 @@ namespace EczaneOtomasyon.UI
     public partial class FrmDrugList : DevExpress.XtraBars.Ribbon.RibbonForm
     {
         private readonly DrugService _drugService;
+        private FrmPrescriptionList? _prescriptionListForm;
+        private FrmStockManagement? _stockManagementForm;
 
         public FrmDrugList()
         {
@@ -21,10 +23,130 @@ namespace EczaneOtomasyon.UI
             // Global Skin
             UserLookAndFeel.Default.SkinName = "Office 2019 Colorful";
             
+            // Uygulama ikonunu yükle
+            LoadApplicationIcon();
+            
             _drugService = new DrugService();
 
             // GridView double-click event
             gridView1.DoubleClick += GridView1_DoubleClick;
+            
+            // Ribbon sekme değiştiğinde kategori gruplandırmasını kontrol et
+            ribbonControl1.SelectedPageChanged += RibbonControl1_SelectedPageChanged;
+        }
+
+        private void LoadApplicationIcon()
+        {
+            try
+            {
+                string iconPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "eczane.ico");
+                if (System.IO.File.Exists(iconPath))
+                {
+                    this.Icon = new Icon(iconPath);
+                }
+            }
+            catch
+            {
+                // İkon yüklenemezse varsayılan ikon kullanılır
+            }
+        }
+
+        private void RibbonControl1_SelectedPageChanged(object sender, EventArgs e)
+        {
+            if (ribbonControl1.SelectedPage == ribbonPage1) // İlaç Yönetimi
+            {
+                // İlaç listesini göster
+                ShowDrugList();
+            }
+            else if (ribbonControl1.SelectedPage == ribbonPage2) // Reçete Yönetimi
+            {
+                // Reçete listesini göster
+                ShowPrescriptionList();
+            }
+            else if (ribbonControl1.SelectedPage == ribbonPage3) // Stok Yönetimi
+            {
+                // Stok yönetimini göster
+                ShowStockManagement();
+            }
+        }
+
+        private void ShowDrugList()
+        {
+            // Diğer formları gizle
+            if (_prescriptionListForm != null && !_prescriptionListForm.IsDisposed)
+            {
+                _prescriptionListForm.Hide();
+            }
+            if (_stockManagementForm != null && !_stockManagementForm.IsDisposed)
+            {
+                _stockManagementForm.Hide();
+            }
+            
+            // Kategori gruplandırmasını aktif et
+            if (gridView1.GroupCount == 0)
+            {
+                gridView1.BeginUpdate();
+                colCategory.GroupIndex = 0;
+                gridView1.EndUpdate();
+            }
+            
+            // Grid'i ve yan paneli göster
+            gridControl1.Visible = true;
+            sidePanel.Visible = true;
+            panelSearch.Visible = true;
+            
+            LoadData();
+            UpdateStatistics();
+        }
+
+        private void ShowPrescriptionList()
+        {
+            // Grid ve panelleri gizle
+            gridControl1.Visible = false;
+            sidePanel.Visible = false;
+            panelSearch.Visible = false;
+            
+            // Reçete listesi formunu oluştur ve embed et
+            if (_prescriptionListForm == null || _prescriptionListForm.IsDisposed)
+            {
+                _prescriptionListForm = new FrmPrescriptionList();
+                _prescriptionListForm.TopLevel = false;
+                _prescriptionListForm.FormBorderStyle = FormBorderStyle.None;
+                _prescriptionListForm.Dock = DockStyle.Fill;
+                this.Controls.Add(_prescriptionListForm);
+                _prescriptionListForm.BringToFront();
+                _prescriptionListForm.Show();
+            }
+            else
+            {
+                _prescriptionListForm.BringToFront();
+                _prescriptionListForm.Show();
+            }
+        }
+
+        private void ShowStockManagement()
+        {
+            // Grid ve panelleri gizle
+            gridControl1.Visible = false;
+            sidePanel.Visible = false;
+            panelSearch.Visible = false;
+            
+            // Stok yönetimi formunu oluştur ve embed et
+            if (_stockManagementForm == null || _stockManagementForm.IsDisposed)
+            {
+                _stockManagementForm = new FrmStockManagement();
+                _stockManagementForm.TopLevel = false;
+                _stockManagementForm.FormBorderStyle = FormBorderStyle.None;
+                _stockManagementForm.Dock = DockStyle.Fill;
+                this.Controls.Add(_stockManagementForm);
+                _stockManagementForm.BringToFront();
+                _stockManagementForm.Show();
+            }
+            else
+            {
+                _stockManagementForm.BringToFront();
+                _stockManagementForm.Show();
+            }
         }
 
         private void GridView1_DoubleClick(object? sender, EventArgs e)
@@ -54,8 +176,10 @@ namespace EczaneOtomasyon.UI
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            LoadData();
-            UpdateStatistics();
+            
+            // Başlangıçta İlaç Yönetimi sekmesini seç ve göster
+            ribbonControl1.SelectedPage = ribbonPage1;
+            ShowDrugList();
         }
 
         private void LoadData()
@@ -166,16 +290,29 @@ namespace EczaneOtomasyon.UI
         {
             using (var frm = new FrmPrescriptionEdit())
             {
-                frm.ShowDialog();
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    // Reçete eklendikten sonra listeyi yenile
+                    if (_prescriptionListForm != null && !_prescriptionListForm.IsDisposed)
+                    {
+                        _prescriptionListForm.Close();
+                        _prescriptionListForm = null;
+                        ShowPrescriptionList();
+                    }
+                }
             }
         }
 
         private void btnPrescriptionList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            using (var frm = new FrmPrescriptionList())
+            // Reçete listesi zaten gösteriliyorsa yenile
+            if (_prescriptionListForm != null && !_prescriptionListForm.IsDisposed)
             {
-                frm.ShowDialog();
+                _prescriptionListForm.Close();
+                _prescriptionListForm = null;
             }
+            ShowPrescriptionList();
         }
+
     }
 }

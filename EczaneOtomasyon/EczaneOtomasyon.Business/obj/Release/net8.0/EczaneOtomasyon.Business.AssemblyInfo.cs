@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EczaneOtomasyon.Business")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5505f25c32a43736bae7e528c991faf014769564")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7b7d986d80499d0f4dd0ff66e480f46da2f3097b")]
 [assembly: System.Reflection.AssemblyProductAttribute("EczaneOtomasyon.Business")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EczaneOtomasyon.Business")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

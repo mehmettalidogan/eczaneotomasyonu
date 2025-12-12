@@ -37,3 +37,4 @@ END
 PRINT 'Migration tamamlandı!';
 GO
 
+

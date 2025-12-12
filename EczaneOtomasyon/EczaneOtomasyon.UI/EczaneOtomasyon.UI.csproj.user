@@ -10,9 +10,6 @@
     <Compile Update="FrmDrugList.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmDrugList_Extension.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="FrmPrescriptionDetails.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -23,6 +20,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="FrmPrescriptionWarnings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmStockManagement.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
