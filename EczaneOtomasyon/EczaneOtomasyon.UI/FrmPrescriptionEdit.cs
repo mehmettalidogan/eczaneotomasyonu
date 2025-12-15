@@ -15,6 +15,7 @@ namespace EczaneOtomasyon.UI
         private readonly PrescriptionChecker _checker;
         private readonly DrugService _drugService;
         private readonly StockService _stockService;
+        private readonly BarcodeService _barcodeService;
         private BindingList<PrescriptionItemDto> _items;
 
         public FrmPrescriptionEdit()
@@ -23,6 +24,7 @@ namespace EczaneOtomasyon.UI
             _checker = new PrescriptionChecker();
             _drugService = new DrugService();
             _stockService = new StockService();
+            _barcodeService = new BarcodeService();
             _items = new BindingList<PrescriptionItemDto>();
             
             // Seed Data (İlk kullanımda tablo boşsa doldurur)
@@ -34,6 +36,91 @@ namespace EczaneOtomasyon.UI
             
             // Tarih varsayılan olarak bugün
             dateEdit1.EditValue = DateTime.Now;
+            
+            // Barkod okuma eventi
+            _barcodeService.BarcodeRead += BarcodeService_BarcodeRead;
+            
+            // Form KeyPreview'ı aç (barkod okuyucu için)
+            this.KeyPreview = true;
+            this.KeyPress += FrmPrescriptionEdit_KeyPress;
+        }
+
+        private void FrmPrescriptionEdit_KeyPress(object? sender, KeyPressEventArgs e)
+        {
+            // Barkod okuyucu klavye gibi çalışır, tuşları yakala
+            // Eğer bir TextEdit'e focus yoksa, barkod olarak kabul et
+            if (this.ActiveControl == null || 
+                (this.ActiveControl != txtPrescriptionNumber && 
+                 this.ActiveControl != txtPatientName && 
+                 this.ActiveControl != txtPatientSurname && 
+                 this.ActiveControl != txtPatientTC))
+            {
+                _barcodeService.ProcessKeyPress(e.KeyChar);
+            }
+        }
+
+        private void BarcodeService_BarcodeRead(object? sender, BarcodeReadEventArgs e)
+        {
+            // Barkod okundu, ilacı bul ve listeye ekle
+            AddDrugByBarcode(e.Barcode);
+        }
+
+        private void AddDrugByBarcode(string barcode)
+        {
+            var drug = _barcodeService.FindDrugByBarcode(barcode);
+            
+            if (drug == null)
+            {
+                XtraMessageBox.Show(
+                    $"'{barcode}' barkodlu ilaç bulunamadı!",
+                    "Bulunamadı",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+            
+            // Stok kontrolü
+            if (drug.Stock <= 0)
+            {
+                XtraMessageBox.Show(
+                    $"'{drug.Name}' ilacı stokta yok!",
+                    "Stok Hatası",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+            
+            // Zaten listede var mı kontrol et
+            var existingItem = _items.FirstOrDefault(i => i.DrugId == drug.Id);
+            if (existingItem != null)
+            {
+                XtraMessageBox.Show(
+                    $"'{drug.Name}' zaten listede mevcut!",
+                    "Bilgi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+            
+            // Listeye ekle
+            var newItem = new PrescriptionItemDto
+            {
+                DrugId = drug.Id,
+                DrugName = drug.Name,
+                DailyDoseMg = drug.DosageMg ?? 0 // Varsayılan doz
+            };
+            
+            _items.Add(newItem);
+            
+            // Bildirim göster
+            XtraMessageBox.Show(
+                $"İlaç eklendi!\n\n" +
+                $"Adı: {drug.Name}\n" +
+                $"Doz: {newItem.DailyDoseMg} mg\n\n" +
+                $"Dozu 'Günlük Doz (mg)' kolonundan düzenleyebilirsiniz.",
+                "Başarılı",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
 
         private void ConfigureGrid()

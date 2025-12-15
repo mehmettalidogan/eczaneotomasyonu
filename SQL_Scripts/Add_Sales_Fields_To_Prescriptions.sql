@@ -38,3 +38,4 @@ PRINT 'Migration tamamlandı!';
 GO
 
 
+

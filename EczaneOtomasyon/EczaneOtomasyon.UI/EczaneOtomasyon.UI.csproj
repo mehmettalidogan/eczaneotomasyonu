@@ -10,8 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="DevExpress.Win" Version="24.1.7" />
-    <PackageReference Include="DevExpress.Win.Design" Version="24.1.7" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

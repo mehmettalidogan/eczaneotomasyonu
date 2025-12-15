@@ -348,10 +348,13 @@ namespace EczaneOtomasyon.UI
             this.gridView1.GroupCount = 1;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsBehavior.Editable = false;
-            this.gridView1.OptionsFind.AlwaysVisible = true;
+            this.gridView1.OptionsBehavior.AutoPopulateColumns = false;
             this.gridView1.OptionsView.EnableAppearanceEvenRow = true;
             this.gridView1.OptionsView.ShowAutoFilterRow = true;
             this.gridView1.OptionsView.ShowGroupPanel = false;
+            this.gridView1.OptionsView.WaitAnimationOptions = DevExpress.XtraEditors.WaitAnimationOptions.Panel;
+            this.gridView1.OptionsFind.AlwaysVisible = true;
+            this.gridView1.OptionsCustomization.AllowQuickHideColumns = false;
             this.gridView1.SortInfo.AddRange(new DevExpress.XtraGrid.Columns.GridColumnSortInfo[] {
             new DevExpress.XtraGrid.Columns.GridColumnSortInfo(this.colCategory, DevExpress.Data.ColumnSortOrder.Ascending)});
             

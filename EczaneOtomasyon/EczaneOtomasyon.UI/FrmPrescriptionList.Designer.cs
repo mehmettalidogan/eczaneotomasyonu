@@ -36,6 +36,7 @@ namespace EczaneOtomasyon.UI
             this.btnClose = new DevExpress.XtraEditors.SimpleButton();
             this.btnViewDetails = new DevExpress.XtraEditors.SimpleButton();
             this.btnSellPrescription = new DevExpress.XtraEditors.SimpleButton();
+            this.btnPrintReceipt = new DevExpress.XtraEditors.SimpleButton();
 
             ((System.ComponentModel.ISupportInitialize)(this.panelTop)).BeginInit();
             this.panelTop.SuspendLayout();
@@ -107,10 +108,13 @@ namespace EczaneOtomasyon.UI
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsBehavior.Editable = false;
-            this.gridView1.OptionsFind.AlwaysVisible = true;
+            this.gridView1.OptionsBehavior.AutoPopulateColumns = false;
             this.gridView1.OptionsView.EnableAppearanceEvenRow = true;
             this.gridView1.OptionsView.ShowAutoFilterRow = true;
             this.gridView1.OptionsView.ShowGroupPanel = false;
+            this.gridView1.OptionsView.WaitAnimationOptions = DevExpress.XtraEditors.WaitAnimationOptions.Panel;
+            this.gridView1.OptionsFind.AlwaysVisible = true;
+            this.gridView1.OptionsCustomization.AllowQuickHideColumns = false;
             this.gridView1.DoubleClick += new System.EventHandler(this.gridView1_DoubleClick);
 
             // 
@@ -222,6 +226,7 @@ namespace EczaneOtomasyon.UI
             // 
             this.panelBottom.Controls.Add(this.btnClose);
             this.panelBottom.Controls.Add(this.btnViewDetails);
+            this.panelBottom.Controls.Add(this.btnPrintReceipt);
             this.panelBottom.Controls.Add(this.btnSellPrescription);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBottom.Location = new System.Drawing.Point(0, 500);
@@ -237,12 +242,25 @@ namespace EczaneOtomasyon.UI
             this.btnSellPrescription.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
             this.btnSellPrescription.Appearance.Options.UseBackColor = true;
             this.btnSellPrescription.Appearance.Options.UseFont = true;
-            this.btnSellPrescription.Location = new System.Drawing.Point(520, 15);
+            this.btnSellPrescription.Location = new System.Drawing.Point(360, 15);
             this.btnSellPrescription.Name = "btnSellPrescription";
             this.btnSellPrescription.Size = new System.Drawing.Size(150, 30);
             this.btnSellPrescription.TabIndex = 2;
             this.btnSellPrescription.Text = "Reçete Sat ✓";
             this.btnSellPrescription.Click += new System.EventHandler(this.btnSellPrescription_Click);
+
+            // 
+            // btnPrintReceipt
+            // 
+            this.btnPrintReceipt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPrintReceipt.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(130)))), ((int)(((byte)(180)))));
+            this.btnPrintReceipt.Appearance.Options.UseBackColor = true;
+            this.btnPrintReceipt.Location = new System.Drawing.Point(520, 15);
+            this.btnPrintReceipt.Name = "btnPrintReceipt";
+            this.btnPrintReceipt.Size = new System.Drawing.Size(150, 30);
+            this.btnPrintReceipt.TabIndex = 3;
+            this.btnPrintReceipt.Text = "Fiş Yazdır 🖨";
+            this.btnPrintReceipt.Click += new System.EventHandler(this.btnPrintReceipt_Click);
 
             // 
             // btnViewDetails
@@ -309,6 +327,7 @@ namespace EczaneOtomasyon.UI
         private DevExpress.XtraEditors.SimpleButton btnViewDetails;
         private DevExpress.XtraEditors.SimpleButton btnClose;
         private DevExpress.XtraEditors.SimpleButton btnSellPrescription;
+        private DevExpress.XtraEditors.SimpleButton btnPrintReceipt;
     }
 }
 

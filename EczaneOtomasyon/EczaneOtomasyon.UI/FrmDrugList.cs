@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using DevExpress.XtraEditors;
 using DevExpress.XtraBars;
 using EczaneOtomasyon.Business;
@@ -15,9 +16,16 @@ namespace EczaneOtomasyon.UI
         private readonly DrugService _drugService;
         private FrmPrescriptionList? _prescriptionListForm;
         private FrmStockManagement? _stockManagementForm;
+        
+        // Veri cache için
+        private List<Drug>? _cachedDrugs;
+        private bool _isDataLoaded = false;
 
         public FrmDrugList()
         {
+            // Performans için layout suspend
+            this.SuspendLayout();
+            
             InitializeComponent();
             
             // Global Skin
@@ -33,6 +41,8 @@ namespace EczaneOtomasyon.UI
             
             // Ribbon sekme değiştiğinde kategori gruplandırmasını kontrol et
             ribbonControl1.SelectedPageChanged += RibbonControl1_SelectedPageChanged;
+            
+            this.ResumeLayout(false);
         }
 
         private void LoadApplicationIcon()
@@ -51,7 +61,7 @@ namespace EczaneOtomasyon.UI
             }
         }
 
-        private void RibbonControl1_SelectedPageChanged(object sender, EventArgs e)
+        private void RibbonControl1_SelectedPageChanged(object? sender, EventArgs e)
         {
             if (ribbonControl1.SelectedPage == ribbonPage1) // İlaç Yönetimi
             {
@@ -72,80 +82,112 @@ namespace EczaneOtomasyon.UI
 
         private void ShowDrugList()
         {
-            // Diğer formları gizle
-            if (_prescriptionListForm != null && !_prescriptionListForm.IsDisposed)
+            this.SuspendLayout();
+            try
             {
-                _prescriptionListForm.Hide();
+                // Diğer formları gizle
+                if (_prescriptionListForm != null && !_prescriptionListForm.IsDisposed)
+                {
+                    _prescriptionListForm.Visible = false;
+                }
+                if (_stockManagementForm != null && !_stockManagementForm.IsDisposed)
+                {
+                    _stockManagementForm.Visible = false;
+                }
+                
+                // Grid'i ve yan paneli göster
+                gridControl1.Visible = true;
+                sidePanel.Visible = true;
+                panelSearch.Visible = true;
+                
+                // Kategori gruplandırmasını aktif et (sadece ilk seferde)
+                if (gridView1.GroupCount == 0)
+                {
+                    gridView1.BeginUpdate();
+                    colCategory.GroupIndex = 0;
+                    gridView1.EndUpdate();
+                }
+                
+                // Veriyi sadece ilk seferde veya yenileme gerektiğinde yükle
+                if (!_isDataLoaded)
+                {
+                    LoadData();
+                    UpdateStatistics();
+                }
             }
-            if (_stockManagementForm != null && !_stockManagementForm.IsDisposed)
+            finally
             {
-                _stockManagementForm.Hide();
+                this.ResumeLayout(true);
             }
-            
-            // Kategori gruplandırmasını aktif et
-            if (gridView1.GroupCount == 0)
-            {
-                gridView1.BeginUpdate();
-                colCategory.GroupIndex = 0;
-                gridView1.EndUpdate();
-            }
-            
-            // Grid'i ve yan paneli göster
-            gridControl1.Visible = true;
-            sidePanel.Visible = true;
-            panelSearch.Visible = true;
-            
-            LoadData();
-            UpdateStatistics();
         }
 
         private void ShowPrescriptionList()
         {
-            // Grid ve panelleri gizle
-            gridControl1.Visible = false;
-            sidePanel.Visible = false;
-            panelSearch.Visible = false;
-            
-            // Reçete listesi formunu oluştur ve embed et
-            if (_prescriptionListForm == null || _prescriptionListForm.IsDisposed)
+            this.SuspendLayout();
+            try
             {
-                _prescriptionListForm = new FrmPrescriptionList();
-                _prescriptionListForm.TopLevel = false;
-                _prescriptionListForm.FormBorderStyle = FormBorderStyle.None;
-                _prescriptionListForm.Dock = DockStyle.Fill;
-                this.Controls.Add(_prescriptionListForm);
+                // Grid ve panelleri gizle
+                gridControl1.Visible = false;
+                sidePanel.Visible = false;
+                panelSearch.Visible = false;
+                
+                // Stok formunu gizle
+                if (_stockManagementForm != null && !_stockManagementForm.IsDisposed)
+                {
+                    _stockManagementForm.Visible = false;
+                }
+                
+                // Reçete listesi formunu oluştur ve embed et (sadece ilk seferde)
+                if (_prescriptionListForm == null || _prescriptionListForm.IsDisposed)
+                {
+                    _prescriptionListForm = new FrmPrescriptionList();
+                    _prescriptionListForm.TopLevel = false;
+                    _prescriptionListForm.FormBorderStyle = FormBorderStyle.None;
+                    _prescriptionListForm.Dock = DockStyle.Fill;
+                    this.Controls.Add(_prescriptionListForm);
+                }
+                
+                _prescriptionListForm.Visible = true;
                 _prescriptionListForm.BringToFront();
-                _prescriptionListForm.Show();
             }
-            else
+            finally
             {
-                _prescriptionListForm.BringToFront();
-                _prescriptionListForm.Show();
+                this.ResumeLayout(true);
             }
         }
 
         private void ShowStockManagement()
         {
-            // Grid ve panelleri gizle
-            gridControl1.Visible = false;
-            sidePanel.Visible = false;
-            panelSearch.Visible = false;
-            
-            // Stok yönetimi formunu oluştur ve embed et
-            if (_stockManagementForm == null || _stockManagementForm.IsDisposed)
+            this.SuspendLayout();
+            try
             {
-                _stockManagementForm = new FrmStockManagement();
-                _stockManagementForm.TopLevel = false;
-                _stockManagementForm.FormBorderStyle = FormBorderStyle.None;
-                _stockManagementForm.Dock = DockStyle.Fill;
-                this.Controls.Add(_stockManagementForm);
+                // Grid ve panelleri gizle
+                gridControl1.Visible = false;
+                sidePanel.Visible = false;
+                panelSearch.Visible = false;
+                
+                // Reçete formunu gizle
+                if (_prescriptionListForm != null && !_prescriptionListForm.IsDisposed)
+                {
+                    _prescriptionListForm.Visible = false;
+                }
+                
+                // Stok yönetimi formunu oluştur ve embed et (sadece ilk seferde)
+                if (_stockManagementForm == null || _stockManagementForm.IsDisposed)
+                {
+                    _stockManagementForm = new FrmStockManagement();
+                    _stockManagementForm.TopLevel = false;
+                    _stockManagementForm.FormBorderStyle = FormBorderStyle.None;
+                    _stockManagementForm.Dock = DockStyle.Fill;
+                    this.Controls.Add(_stockManagementForm);
+                }
+                
+                _stockManagementForm.Visible = true;
                 _stockManagementForm.BringToFront();
-                _stockManagementForm.Show();
             }
-            else
+            finally
             {
-                _stockManagementForm.BringToFront();
-                _stockManagementForm.Show();
+                this.ResumeLayout(true);
             }
         }
 
@@ -184,14 +226,26 @@ namespace EczaneOtomasyon.UI
 
         private void LoadData()
         {
-            var drugs = _drugService.GetAll();
-            gridControl1.DataSource = drugs;
-            lblLastUpdate.Caption = $"Son Güncelleme: {DateTime.Now:HH:mm:ss}";
+            gridControl1.BeginUpdate();
+            try
+            {
+                _cachedDrugs = _drugService.GetAll();
+                gridControl1.DataSource = _cachedDrugs;
+                lblLastUpdate.Caption = $"Son Güncelleme: {DateTime.Now:HH:mm:ss}";
+                _isDataLoaded = true;
+            }
+            finally
+            {
+                gridControl1.EndUpdate();
+            }
         }
 
         private void UpdateStatistics()
         {
-            var drugs = _drugService.GetAll();
+            // Cache'den kullan, tekrar veritabanına gitme
+            var drugs = _cachedDrugs ?? _drugService.GetAll();
+            
+            if (drugs.Count == 0) return;
             
             int totalDrugs = drugs.Count;
             int distinctSubstances = drugs.Select(d => d.ActiveSubstance).Distinct().Count();
@@ -213,6 +267,7 @@ namespace EczaneOtomasyon.UI
                     try
                     {
                         _drugService.Add(frm.Drug);
+                        _isDataLoaded = false; // Cache'i invalidate et
                         LoadData();
                         UpdateStatistics();
                     }
@@ -237,6 +292,7 @@ namespace EczaneOtomasyon.UI
                     try
                     {
                         _drugService.Update(frm.Drug);
+                        _isDataLoaded = false; // Cache'i invalidate et
                         LoadData();
                         UpdateStatistics();
                     }
@@ -258,6 +314,7 @@ namespace EczaneOtomasyon.UI
                 try
                 {
                     _drugService.Delete(selectedRow.Id);
+                    _isDataLoaded = false; // Cache'i invalidate et
                     LoadData();
                     UpdateStatistics();
                 }
@@ -270,19 +327,29 @@ namespace EczaneOtomasyon.UI
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            var searchText = txtSearch.Text.ToLower();
-            var allDrugs = _drugService.GetAll();
-            
-            if (string.IsNullOrWhiteSpace(searchText))
+            gridControl1.BeginUpdate();
+            try
             {
-                gridControl1.DataSource = allDrugs;
+                var searchText = txtSearch.Text.ToLower();
+                
+                // Cache'den kullan
+                var allDrugs = _cachedDrugs ?? _drugService.GetAll();
+                
+                if (string.IsNullOrWhiteSpace(searchText))
+                {
+                    gridControl1.DataSource = allDrugs;
+                }
+                else
+                {
+                    var filtered = allDrugs.Where(d => 
+                        d.Name.ToLower().Contains(searchText) || 
+                        d.ActiveSubstance.ToLower().Contains(searchText)).ToList();
+                    gridControl1.DataSource = filtered;
+                }
             }
-            else
+            finally
             {
-                var filtered = allDrugs.Where(d => 
-                    d.Name.ToLower().Contains(searchText) || 
-                    d.ActiveSubstance.ToLower().Contains(searchText)).ToList();
-                gridControl1.DataSource = filtered;
+                gridControl1.EndUpdate();
             }
         }
 
@@ -295,9 +362,7 @@ namespace EczaneOtomasyon.UI
                     // Reçete eklendikten sonra listeyi yenile
                     if (_prescriptionListForm != null && !_prescriptionListForm.IsDisposed)
                     {
-                        _prescriptionListForm.Close();
-                        _prescriptionListForm = null;
-                        ShowPrescriptionList();
+                        _prescriptionListForm.RefreshData(); // Close yerine refresh
                     }
                 }
             }
@@ -305,13 +370,15 @@ namespace EczaneOtomasyon.UI
 
         private void btnPrescriptionList_ItemClick(object sender, ItemClickEventArgs e)
         {
-            // Reçete listesi zaten gösteriliyorsa yenile
+            // Reçete listesi gösteriliyorsa yenile
             if (_prescriptionListForm != null && !_prescriptionListForm.IsDisposed)
             {
-                _prescriptionListForm.Close();
-                _prescriptionListForm = null;
+                _prescriptionListForm.RefreshData();
             }
-            ShowPrescriptionList();
+            else
+            {
+                ShowPrescriptionList();
+            }
         }
 
     }

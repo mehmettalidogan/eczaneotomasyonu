@@ -1,7 +1,10 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Drawing.Printing;
 using DevExpress.XtraEditors;
+using DevExpress.XtraPrinting;
 using EczaneOtomasyon.Business;
 using EczaneOtomasyon.DataAccess;
 
@@ -10,13 +13,26 @@ namespace EczaneOtomasyon.UI
     public partial class FrmPrescriptionList : DevExpress.XtraEditors.XtraForm
     {
         private readonly PrescriptionChecker _prescriptionChecker;
+        private List<Prescription>? _cachedPrescriptions;
 
         public FrmPrescriptionList()
         {
+            this.SuspendLayout();
+            
             InitializeComponent();
             _prescriptionChecker = new PrescriptionChecker();
-            LoadData();
             ConfigureGridAppearance();
+            
+            this.ResumeLayout(false);
+            
+            // Veri yüklemeyi constructor dışına al - lazy loading
+            this.Load += (s, e) => LoadData();
+        }
+        
+        // Dışarıdan veri yenileme için public metod
+        public void RefreshData()
+        {
+            LoadData();
         }
 
         private void ConfigureGridAppearance()
@@ -43,30 +59,35 @@ namespace EczaneOtomasyon.UI
 
         private void LoadData()
         {
+            gridControl1.BeginUpdate();
             try
             {
-                var prescriptions = _prescriptionChecker.GetAllPrescriptions();
-                gridControl1.DataSource = prescriptions;
+                _cachedPrescriptions = _prescriptionChecker.GetAllPrescriptions();
+                gridControl1.DataSource = _cachedPrescriptions;
                 
                 // İstatistikleri hesapla
-                var soldCount = prescriptions.Count(p => p.IsSold);
-                var pendingCount = prescriptions.Count(p => !p.IsSold);
-                var totalSales = prescriptions.Where(p => p.IsSold).Sum(p => p.TotalAmount);
+                var soldCount = _cachedPrescriptions.Count(p => p.IsSold);
+                var pendingCount = _cachedPrescriptions.Count(p => !p.IsSold);
+                var totalSales = _cachedPrescriptions.Where(p => p.IsSold).Sum(p => p.TotalAmount);
                 
                 // Başlığı güncelle
-                lblTitle.Text = $"Reçete Listesi | Toplam: {prescriptions.Count} | Satıldı: {soldCount} | Bekliyor: {pendingCount} | Toplam Satış: {totalSales:C2}";
+                lblTitle.Text = $"Reçete Listesi | Toplam: {_cachedPrescriptions.Count} | Satıldı: {soldCount} | Bekliyor: {pendingCount} | Toplam Satış: {totalSales:C2}";
             }
             catch (Exception ex)
             {
                 XtraMessageBox.Show($"Reçeteler yüklenirken hata oluştu: {ex.Message}", "Hata", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                gridControl1.EndUpdate();
+            }
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             LoadData();
-            XtraMessageBox.Show("Liste yenilendi.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Gereksiz mesaj kutusu kaldırıldı - performans için
         }
 
         private void btnViewDetails_Click(object sender, EventArgs e)
@@ -163,6 +184,70 @@ namespace EczaneOtomasyon.UI
             catch (Exception ex)
             {
                 XtraMessageBox.Show($"Satış işlemi sırasında hata oluştu: {ex.Message}", "Hata", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnPrintReceipt_Click(object sender, EventArgs e)
+        {
+            var selectedPrescription = gridView1.GetFocusedRow() as Prescription;
+            if (selectedPrescription == null)
+            {
+                XtraMessageBox.Show("Lütfen bir reçete seçiniz.", "Uyarı", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Sadece satılmış reçeteler için fiş yazdırılabilir
+            if (!selectedPrescription.IsSold)
+            {
+                XtraMessageBox.Show(
+                    "Sadece satılmış reçeteler için fiş yazdırabilirsiniz.\n\n" +
+                    "Önce 'Reçete Sat' butonuna tıklayarak satışı gerçekleştirin.",
+                    "Bilgi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                var printer = new ReceiptPrinter();
+                printer.PreparePrescriptionReceipt(selectedPrescription.Id);
+                
+                // Önizleme göster
+                var result = XtraMessageBox.Show(
+                    "Fiş yazdırmak istiyor musunuz?\n\n" +
+                    "Evet = Yazıcıya gönder\n" +
+                    "Hayır = Önizleme göster\n" +
+                    "İptal = İşlemi iptal et",
+                    "Yazdırma",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    // Doğrudan yazdır
+                    printer.Print();
+                    XtraMessageBox.Show("Fiş yazıcıya gönderildi.", "Başarılı", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else if (result == DialogResult.No)
+                {
+                    // Önizleme göster
+                    var printDoc = printer.GetPrintDocument();
+                    using (var previewDialog = new PrintPreviewDialog())
+                    {
+                        previewDialog.Document = printDoc;
+                        previewDialog.Width = 800;
+                        previewDialog.Height = 600;
+                        previewDialog.ShowDialog();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"Yazdırma hatası: {ex.Message}", "Hata", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

@@ -43,6 +43,10 @@ namespace EczaneOtomasyon.UI
             this.btnAddStock = new DevExpress.XtraEditors.SimpleButton();
             this.txtQuantity = new DevExpress.XtraEditors.SpinEdit();
             this.labelControl4 = new DevExpress.XtraEditors.LabelControl();
+            this.groupControl4 = new DevExpress.XtraEditors.GroupControl();
+            this.txtBarcodeSearch = new DevExpress.XtraEditors.TextEdit();
+            this.btnBarcodeSearch = new DevExpress.XtraEditors.SimpleButton();
+            this.labelControl5 = new DevExpress.XtraEditors.LabelControl();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -59,6 +63,9 @@ namespace EczaneOtomasyon.UI
             ((System.ComponentModel.ISupportInitialize)(this.groupControl3)).BeginInit();
             this.groupControl3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtQuantity.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.groupControl4)).BeginInit();
+            this.groupControl4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtBarcodeSearch.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
@@ -101,8 +108,12 @@ namespace EczaneOtomasyon.UI
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsBehavior.Editable = false;
+            this.gridView1.OptionsBehavior.AutoPopulateColumns = false;
+            this.gridView1.OptionsView.EnableAppearanceEvenRow = true;
             this.gridView1.OptionsView.ShowGroupPanel = false;
             this.gridView1.OptionsView.ShowAutoFilterRow = true;
+            this.gridView1.OptionsView.WaitAnimationOptions = DevExpress.XtraEditors.WaitAnimationOptions.Panel;
+            this.gridView1.OptionsCustomization.AllowQuickHideColumns = false;
 
             // 
             // colId
@@ -167,6 +178,7 @@ namespace EczaneOtomasyon.UI
             // 
             // panelControl1
             // 
+            this.panelControl1.Controls.Add(this.groupControl4);
             this.panelControl1.Controls.Add(this.groupControl3);
             this.panelControl1.Controls.Add(this.groupControl2);
             this.panelControl1.Controls.Add(this.groupControl1);
@@ -370,6 +382,46 @@ namespace EczaneOtomasyon.UI
             this.btnSetStock.Click += new System.EventHandler(this.btnSetStock_Click);
 
             // 
+            // groupControl4
+            // 
+            this.groupControl4.Controls.Add(this.btnBarcodeSearch);
+            this.groupControl4.Controls.Add(this.txtBarcodeSearch);
+            this.groupControl4.Controls.Add(this.labelControl5);
+            this.groupControl4.Location = new System.Drawing.Point(15, 535);
+            this.groupControl4.Name = "groupControl4";
+            this.groupControl4.Size = new System.Drawing.Size(266, 120);
+            this.groupControl4.TabIndex = 7;
+            this.groupControl4.Text = "Barkod ile Ara";
+
+            // 
+            // labelControl5
+            // 
+            this.labelControl5.Location = new System.Drawing.Point(15, 35);
+            this.labelControl5.Name = "labelControl5";
+            this.labelControl5.Size = new System.Drawing.Size(38, 13);
+            this.labelControl5.TabIndex = 0;
+            this.labelControl5.Text = "Barkod:";
+
+            // 
+            // txtBarcodeSearch
+            // 
+            this.txtBarcodeSearch.Location = new System.Drawing.Point(15, 55);
+            this.txtBarcodeSearch.Name = "txtBarcodeSearch";
+            this.txtBarcodeSearch.Size = new System.Drawing.Size(236, 20);
+            this.txtBarcodeSearch.TabIndex = 1;
+            this.txtBarcodeSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBarcodeSearch_KeyDown);
+
+            // 
+            // btnBarcodeSearch
+            // 
+            this.btnBarcodeSearch.Location = new System.Drawing.Point(15, 85);
+            this.btnBarcodeSearch.Name = "btnBarcodeSearch";
+            this.btnBarcodeSearch.Size = new System.Drawing.Size(236, 28);
+            this.btnBarcodeSearch.TabIndex = 2;
+            this.btnBarcodeSearch.Text = "Ara ve Seç";
+            this.btnBarcodeSearch.Click += new System.EventHandler(this.btnBarcodeSearch_Click);
+
+            // 
             // layoutControlGroup1
             // 
             this.layoutControlGroup1.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
@@ -426,6 +478,10 @@ namespace EczaneOtomasyon.UI
             this.groupControl3.ResumeLayout(false);
             this.groupControl3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtQuantity.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.groupControl4)).EndInit();
+            this.groupControl4.ResumeLayout(false);
+            this.groupControl4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtBarcodeSearch.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
@@ -461,6 +517,10 @@ namespace EczaneOtomasyon.UI
         private DevExpress.XtraEditors.SimpleButton btnAddStock;
         private DevExpress.XtraEditors.SpinEdit txtQuantity;
         private DevExpress.XtraEditors.LabelControl labelControl4;
+        private DevExpress.XtraEditors.GroupControl groupControl4;
+        private DevExpress.XtraEditors.SimpleButton btnBarcodeSearch;
+        private DevExpress.XtraEditors.TextEdit txtBarcodeSearch;
+        private DevExpress.XtraEditors.LabelControl labelControl5;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
     }

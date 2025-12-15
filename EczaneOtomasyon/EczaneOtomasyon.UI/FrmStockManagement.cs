@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using EczaneOtomasyon.Business;
@@ -11,30 +12,138 @@ namespace EczaneOtomasyon.UI
     {
         private readonly StockService _stockService;
         private readonly DrugService _drugService;
+        private readonly BarcodeService _barcodeService;
+        private List<Drug>? _cachedDrugs;
 
         public FrmStockManagement()
         {
+            this.SuspendLayout();
+            
             InitializeComponent();
             _stockService = new StockService();
             _drugService = new DrugService();
+            _barcodeService = new BarcodeService();
             
-            LoadData();
-            UpdateStatistics();
+            this.ResumeLayout(false);
+            
+            // Veri yüklemeyi constructor dışına al - lazy loading
+            this.Load += (s, e) => {
+                LoadData();
+                UpdateStatistics();
+            };
+            
+            // Barkod okuma eventi
+            _barcodeService.BarcodeRead += BarcodeService_BarcodeRead;
+        }
+
+        private void BarcodeService_BarcodeRead(object? sender, BarcodeReadEventArgs e)
+        {
+            // Barkod okundu, arama kutusuna yazdır ve ara
+            txtBarcodeSearch.Text = e.Barcode;
+            SearchByBarcode(e.Barcode);
+        }
+
+        private void btnBarcodeSearch_Click(object sender, EventArgs e)
+        {
+            string barcode = txtBarcodeSearch.Text.Trim();
+            
+            if (string.IsNullOrWhiteSpace(barcode))
+            {
+                XtraMessageBox.Show(
+                    "Lütfen bir barkod numarası girin.",
+                    "Uyarı",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+            
+            SearchByBarcode(barcode);
+        }
+
+        private void txtBarcodeSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Enter tuşuna basıldığında ara
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnBarcodeSearch_Click(sender, e);
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void SearchByBarcode(string barcode)
+        {
+            var drug = _barcodeService.FindDrugByBarcode(barcode);
+            
+            if (drug == null)
+            {
+                XtraMessageBox.Show(
+                    $"'{barcode}' barkodlu ilaç bulunamadı!",
+                    "Bulunamadı",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+            
+            // İlacı grid'de bul ve seç
+            int rowHandle = -1;
+            for (int i = 0; i < gridView1.DataRowCount; i++)
+            {
+                var rowDrug = gridView1.GetRow(i) as Drug;
+                if (rowDrug != null && rowDrug.Id == drug.Id)
+                {
+                    rowHandle = i;
+                    break;
+                }
+            }
+            
+            if (rowHandle >= 0)
+            {
+                gridView1.FocusedRowHandle = rowHandle;
+                gridView1.SelectRow(rowHandle);
+                
+                // Seçili satırı görünür yap
+                gridView1.MakeRowVisible(rowHandle);
+                
+                XtraMessageBox.Show(
+                    $"İlaç bulundu!\n\n" +
+                    $"Adı: {drug.Name}\n" +
+                    $"Stok: {drug.Stock}\n" +
+                    $"Fiyat: {drug.Price:C2}",
+                    "Başarılı",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            else
+            {
+                // Cache'de yok, tüm listeyi göster ve tekrar ara
+                LoadData();
+                SearchByBarcode(barcode);
+            }
         }
 
         private void LoadData()
         {
-            var drugs = _stockService.GetAllWithStock();
-            gridControl1.DataSource = drugs;
+            gridControl1.BeginUpdate();
+            try
+            {
+                _cachedDrugs = _stockService.GetAllWithStock();
+                gridControl1.DataSource = _cachedDrugs;
+            }
+            finally
+            {
+                gridControl1.EndUpdate();
+            }
         }
 
         private void UpdateStatistics()
         {
-            var outOfStockDrugs = _stockService.GetOutOfStockDrugs();
-            var lowStockDrugs = _stockService.GetLowStockDrugs(10);
+            // Sadece gerekli istatistikleri çek
+            var outOfStockCount = _cachedDrugs?.Count(d => d.Stock == 0) ?? 0;
+            var lowStockCount = _cachedDrugs?.Count(d => d.Stock > 0 && d.Stock <= 10) ?? 0;
 
-            lblOutOfStockCount.Text = outOfStockDrugs.Count.ToString();
-            lblLowStockCount.Text = lowStockDrugs.Count.ToString();
+            lblOutOfStockCount.Text = outOfStockCount.ToString();
+            lblLowStockCount.Text = lowStockCount.ToString();
         }
 
         private void btnInitializeStocks_Click(object sender, EventArgs e)
@@ -77,13 +186,31 @@ namespace EczaneOtomasyon.UI
 
         private void btnShowLowStock_Click(object sender, EventArgs e)
         {
-            var lowStockDrugs = _stockService.GetLowStockDrugs(10);
-            gridControl1.DataSource = lowStockDrugs;
+            gridControl1.BeginUpdate();
+            try
+            {
+                // Cache'den filtrele, tekrar veritabanına gitme
+                var lowStockDrugs = _cachedDrugs?.Where(d => d.Stock > 0 && d.Stock <= 10).ToList() 
+                    ?? _stockService.GetLowStockDrugs(10);
+                gridControl1.DataSource = lowStockDrugs;
+            }
+            finally
+            {
+                gridControl1.EndUpdate();
+            }
         }
 
         private void btnShowAll_Click(object sender, EventArgs e)
         {
-            LoadData();
+            gridControl1.BeginUpdate();
+            try
+            {
+                gridControl1.DataSource = _cachedDrugs;
+            }
+            finally
+            {
+                gridControl1.EndUpdate();
+            }
         }
 
         private void btnAddStock_Click(object sender, EventArgs e)

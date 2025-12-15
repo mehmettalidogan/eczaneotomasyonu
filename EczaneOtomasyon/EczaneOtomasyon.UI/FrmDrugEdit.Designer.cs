@@ -42,6 +42,9 @@ namespace EczaneOtomasyon.UI
             this.txtCategory = new DevExpress.XtraEditors.TextEdit();
             this.lblPrice = new DevExpress.XtraEditors.LabelControl();
             this.txtPrice = new DevExpress.XtraEditors.SpinEdit();
+            this.lblBarcode = new DevExpress.XtraEditors.LabelControl();
+            this.txtBarcode = new DevExpress.XtraEditors.TextEdit();
+            this.btnScanBarcode = new DevExpress.XtraEditors.SimpleButton();
             this.btnSave = new DevExpress.XtraEditors.SimpleButton();
             this.btnCancel = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.txtName.Properties)).BeginInit();
@@ -179,22 +182,49 @@ namespace EczaneOtomasyon.UI
             this.txtPrice.TabIndex = 13;
 
             // 
+            // lblBarcode
+            // 
+            this.lblBarcode.Location = new System.Drawing.Point(20, 230);
+            this.lblBarcode.Name = "lblBarcode";
+            this.lblBarcode.Size = new System.Drawing.Size(38, 13);
+            this.lblBarcode.TabIndex = 14;
+            this.lblBarcode.Text = "Barkod:";
+
+            // 
+            // txtBarcode
+            // 
+            this.txtBarcode.Location = new System.Drawing.Point(120, 227);
+            this.txtBarcode.Name = "txtBarcode";
+            this.txtBarcode.Size = new System.Drawing.Size(150, 20);
+            this.txtBarcode.TabIndex = 15;
+
+            // 
+            // btnScanBarcode
+            // 
+            this.btnScanBarcode.Location = new System.Drawing.Point(276, 225);
+            this.btnScanBarcode.Name = "btnScanBarcode";
+            this.btnScanBarcode.Size = new System.Drawing.Size(44, 23);
+            this.btnScanBarcode.TabIndex = 16;
+            this.btnScanBarcode.Text = "Oku";
+            this.btnScanBarcode.Click += new System.EventHandler(this.btnScanBarcode_Click);
+
+            // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(120, 240);
+            this.btnSave.Location = new System.Drawing.Point(120, 270);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 14;
+            this.btnSave.TabIndex = 17;
             this.btnSave.Text = "Kaydet";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(201, 240);
+            this.btnCancel.Location = new System.Drawing.Point(201, 270);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 15;
+            this.btnCancel.TabIndex = 18;
             this.btnCancel.Text = "İptal";
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 
@@ -203,9 +233,12 @@ namespace EczaneOtomasyon.UI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(350, 300);
+            this.ClientSize = new System.Drawing.Size(350, 330);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
+            this.Controls.Add(this.btnScanBarcode);
+            this.Controls.Add(this.txtBarcode);
+            this.Controls.Add(this.lblBarcode);
             this.Controls.Add(this.txtPrice);
             this.Controls.Add(this.lblPrice);
             this.Controls.Add(this.txtCategory);
@@ -233,6 +266,7 @@ namespace EczaneOtomasyon.UI
             ((System.ComponentModel.ISupportInitialize)(this.txtCompany.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtCategory.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtPrice.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtBarcode.Properties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -254,6 +288,9 @@ namespace EczaneOtomasyon.UI
         private DevExpress.XtraEditors.TextEdit txtCategory;
         private DevExpress.XtraEditors.LabelControl lblPrice;
         private DevExpress.XtraEditors.SpinEdit txtPrice;
+        private DevExpress.XtraEditors.LabelControl lblBarcode;
+        private DevExpress.XtraEditors.TextEdit txtBarcode;
+        private DevExpress.XtraEditors.SimpleButton btnScanBarcode;
         private DevExpress.XtraEditors.SimpleButton btnSave;
         private DevExpress.XtraEditors.SimpleButton btnCancel;
     }
