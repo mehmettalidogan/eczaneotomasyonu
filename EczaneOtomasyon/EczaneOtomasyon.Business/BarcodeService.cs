@@ -1,28 +1,22 @@
 using System;
 using System.Linq;
-using System.Windows.Forms;
 using EczaneOtomasyon.DataAccess;
+using EczaneOtomasyon.DataAccess.Repositories;
+using EczaneOtomasyon.Business.Interfaces;
 
 namespace EczaneOtomasyon.Business
 {
-    /// <summary>
-    /// Barkod okuma ve işleme servisi
-    /// USB/Serial barkod okuyuculardan gelen verileri yakalar
-    /// </summary>
-    public class BarcodeService
+    public class BarcodeService : IBarcodeService
     {
-        private readonly EczaneContext _context;
+        private readonly IDrugRepository _drugRepository;
         private string _barcodeBuffer = string.Empty;
         private DateTime _lastKeyPress = DateTime.Now;
 
-        public BarcodeService()
+        public BarcodeService(IDrugRepository drugRepository)
         {
-            _context = new EczaneContext();
+            _drugRepository = drugRepository;
         }
 
-        /// <summary>
-        /// Barkod okuyucudan gelen tuş vuruşlarını toplar
-        /// </summary>
         public void ProcessKeyPress(char key)
         {
             // 100ms'den fazla süre geçtiyse buffer'ı sıfırla
@@ -49,9 +43,6 @@ namespace EczaneOtomasyon.Business
             }
         }
 
-        /// <summary>
-        /// Barkod okunduğunda tetiklenir
-        /// </summary>
         public event EventHandler<BarcodeReadEventArgs>? BarcodeRead;
 
         protected virtual void OnBarcodeRead(string barcode)
@@ -59,20 +50,14 @@ namespace EczaneOtomasyon.Business
             BarcodeRead?.Invoke(this, new BarcodeReadEventArgs(barcode));
         }
 
-        /// <summary>
-        /// Barkoda göre ilacı veritabanında arar
-        /// </summary>
         public Drug? FindDrugByBarcode(string barcode)
         {
             if (string.IsNullOrWhiteSpace(barcode))
                 return null;
 
-            return _context.Drugs.FirstOrDefault(d => d.Barcode == barcode.Trim());
+            return _drugRepository.GetByBarcode(barcode.Trim());
         }
 
-        /// <summary>
-        /// Manuel barkod girişi için doğrulama
-        /// </summary>
         public bool ValidateBarcode(string barcode)
         {
             if (string.IsNullOrWhiteSpace(barcode))
@@ -82,9 +67,6 @@ namespace EczaneOtomasyon.Business
             return barcode.All(c => char.IsLetterOrDigit(c) || c == '-');
         }
 
-        /// <summary>
-        /// Barkod formatını kontrol eder (EAN-13, Code128, vb.)
-        /// </summary>
         public BarcodeFormat GetBarcodeFormat(string barcode)
         {
             if (string.IsNullOrWhiteSpace(barcode))
@@ -105,9 +87,6 @@ namespace EczaneOtomasyon.Business
             return BarcodeFormat.Unknown;
         }
 
-        /// <summary>
-        /// EAN-13 barkod için check digit doğrulaması
-        /// </summary>
         public bool ValidateEAN13(string barcode)
         {
             if (barcode.Length != 13 || !barcode.All(char.IsDigit))
@@ -124,22 +103,16 @@ namespace EczaneOtomasyon.Business
             return checkDigit == int.Parse(barcode[12].ToString());
         }
 
-        /// <summary>
-        /// Barkod bilgisini günceller
-        /// </summary>
         public void UpdateDrugBarcode(int drugId, string barcode)
         {
-            var drug = _context.Drugs.Find(drugId);
+            var drug = _drugRepository.GetById(drugId);
             if (drug != null)
             {
                 drug.Barcode = barcode.Trim();
-                _context.SaveChanges();
+                _drugRepository.Update(drug);
             }
         }
 
-        /// <summary>
-        /// Otomatik barkod üretir (ilaç ID'sine göre)
-        /// </summary>
         public string GenerateBarcode(int drugId)
         {
             // Örnek: "ILC" + 10 haneli ID (sıfır doldurmalı)
@@ -147,9 +120,6 @@ namespace EczaneOtomasyon.Business
         }
     }
 
-    /// <summary>
-    /// Barkod okunduğunda event argümanı
-    /// </summary>
     public class BarcodeReadEventArgs : EventArgs
     {
         public string Barcode { get; }
@@ -162,18 +132,13 @@ namespace EczaneOtomasyon.Business
         }
     }
 
-    /// <summary>
-    /// Barkod formatları
-    /// </summary>
     public enum BarcodeFormat
     {
         Unknown,
         EAN13,      // 13 haneli (yaygın perakende)
         EAN8,       // 8 haneli
         Code128,    // Değişken uzunluk
-        QRCode      // QR kod
+        QRCode
     }
 }
-
-
 

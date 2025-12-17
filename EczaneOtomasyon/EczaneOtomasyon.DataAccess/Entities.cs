@@ -11,12 +11,10 @@ namespace EczaneOtomasyon.DataAccess
         public string PatientTC { get; set; } = string.Empty;
         public int PatientAge { get; set; }
         public DateTime Date { get; set; }
-        
-        // Satış Bilgileri
         public bool IsSold { get; set; } = false;
         public DateTime? SaleDate { get; set; }
         public decimal TotalAmount { get; set; } = 0;
-        public string SaleStatus { get; set; } = "Bekliyor"; // "Bekliyor", "Satıldı"
+        public string SaleStatus { get; set; } = "Bekliyor";
     }
 
     public class PrescriptionItem
@@ -32,7 +30,7 @@ namespace EczaneOtomasyon.DataAccess
         public int Id { get; set; }
         public int Drug1Id { get; set; }
         public int Drug2Id { get; set; }
-        public string Severity { get; set; } = string.Empty; // "Low", "Medium", "High"
+        public string Severity { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
     }
 
@@ -46,4 +44,3 @@ namespace EczaneOtomasyon.DataAccess
         public string Message { get; set; } = string.Empty;
     }
 }
-

@@ -2,32 +2,41 @@ using System;
 using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using EczaneOtomasyon.Business;
+using EczaneOtomasyon.Business.Interfaces;
 using EczaneOtomasyon.DataAccess;
 
 namespace EczaneOtomasyon.UI
 {
     public partial class FrmDrugDetails : DevExpress.XtraEditors.XtraForm
     {
-        private readonly Drug _selectedDrug;
-        private readonly DrugService _drugService;
+        public Drug Drug { get; set; } = null!;
+        private readonly IDrugService _drugService;
 
-        public FrmDrugDetails(Drug drug)
+        // Dependency Injection ile servis alınıyor
+        public FrmDrugDetails(IDrugService drugService)
         {
             InitializeComponent();
-            _selectedDrug = drug;
-            _drugService = new DrugService();
-            LoadDetails();
+            _drugService = drugService;
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (Drug != null)
+            {
+                LoadDetails();
+            }
         }
 
         private void LoadDetails()
         {
-            lblName.Text = _selectedDrug.Name;
-            lblActiveSubstance.Text = $"Etken Madde: {_selectedDrug.ActiveSubstance}";
-            lblForm.Text = $"Form: {_selectedDrug.Form}";
-            lblDosage.Text = $"Doz: {_selectedDrug.DosageMg} mg";
-            lblCategory.Text = $"Kategori: {_selectedDrug.Category}";
-            lblCompany.Text = $"Firma: {_selectedDrug.Company}";
-            lblPrice.Text = $"{_selectedDrug.Price:C2}";
+            lblName.Text = Drug.Name;
+            lblActiveSubstance.Text = $"Etken Madde: {Drug.ActiveSubstance}";
+            lblForm.Text = $"Form: {Drug.Form}";
+            lblDosage.Text = $"Doz: {Drug.DosageMg} mg";
+            lblCategory.Text = $"Kategori: {Drug.Category}";
+            lblCompany.Text = $"Firma: {Drug.Company}";
+            lblPrice.Text = $"{Drug.Price:C2}";
         }
 
         private void btnGetAlternatives_Click(object sender, EventArgs e)
@@ -35,7 +44,7 @@ namespace EczaneOtomasyon.UI
             try
             {
                 var allDrugs = _drugService.GetAll();
-                var alternatives = DrugSimilarityService.GetAlternatives(_selectedDrug, allDrugs);
+                var alternatives = DrugSimilarityService.GetAlternatives(Drug, allDrugs);
                 
                 gridControl1.DataSource = alternatives;
                 

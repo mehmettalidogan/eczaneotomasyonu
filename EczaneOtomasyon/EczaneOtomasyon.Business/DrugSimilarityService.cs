@@ -86,4 +86,3 @@ namespace EczaneOtomasyon.Business
         }
     }
 }
-

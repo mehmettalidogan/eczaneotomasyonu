@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EczaneOtomasyon.DataAccess;
+using EczaneOtomasyon.DataAccess.Repositories;
+using EczaneOtomasyon.Business.Interfaces;
 
 namespace EczaneOtomasyon.Business
 {
-    // DTOs
     public class PrescriptionItemDto
     {
         public int DrugId { get; set; }
@@ -15,27 +16,32 @@ namespace EczaneOtomasyon.Business
 
     public class InteractionWarning
     {
-        public string Type { get; set; } = string.Empty; // "Interaction" or "Dose"
-        public string Severity { get; set; } = string.Empty; // "Low", "Medium", "High"
+        public string Type { get; set; } = string.Empty;
+        public string Severity { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
     }
 
-    public class PrescriptionChecker
+    public class PrescriptionChecker : IPrescriptionChecker
     {
-        private readonly EczaneContext _context;
+        private readonly IEczaneContext _context;
+        private readonly IPrescriptionRepository _prescriptionRepository;
+        private readonly IDrugRepository _drugRepository;
 
-        public PrescriptionChecker()
+        public PrescriptionChecker(
+            IEczaneContext context,
+            IPrescriptionRepository prescriptionRepository,
+            IDrugRepository drugRepository)
         {
-            _context = new EczaneContext();
-            _context.Database.EnsureCreated(); // Tabloların oluştuğundan emin ol
+            _context = context;
+            _prescriptionRepository = prescriptionRepository;
+            _drugRepository = drugRepository;
+            _context.Database.EnsureCreated();
         }
 
         public List<InteractionWarning> CheckInteractions(List<PrescriptionItemDto> items)
         {
             var warnings = new List<InteractionWarning>();
             var drugIds = items.Select(i => i.DrugId).ToList();
-
-            // Veritabanındaki tüm etkileşim kurallarını çek (Performans için sadece ilgili ilaçlar filtrelenebilir)
             var allContraindications = _context.Contraindications.ToList();
 
             for (int i = 0; i < items.Count; i++)
@@ -44,8 +50,6 @@ namespace EczaneOtomasyon.Business
                 {
                     var d1 = items[i];
                     var d2 = items[j];
-
-                    // Çift yönlü kontrol (A-B veya B-A)
                     var match = allContraindications.FirstOrDefault(c => 
                         (c.Drug1Id == d1.DrugId && c.Drug2Id == d2.DrugId) ||
                         (c.Drug1Id == d2.DrugId && c.Drug2Id == d1.DrugId));
@@ -71,12 +75,10 @@ namespace EczaneOtomasyon.Business
 
             foreach (var item in items)
             {
-                // İlgili ilaç için kuralları bul
                 var rules = _context.DoseRules.Where(r => r.DrugId == item.DrugId).ToList();
 
                 foreach (var rule in rules)
                 {
-                    // Yaş Kontrolü
                     if (patientAge >= rule.MinAge && patientAge <= rule.MaxAge)
                     {
                         if (item.DailyDoseMg > rule.MaxDailyDoseMg)
@@ -95,18 +97,13 @@ namespace EczaneOtomasyon.Business
             return warnings;
         }
         
-        // Seed Data Helper (UI'dan çağırıp test verisi oluşturmak için)
         public void EnsureSeedData()
         {
             if (_context.DoseRules.Any() && _context.Contraindications.Any())
-            {
-                return; // Zaten veri var
-            }
+                return;
 
-            var allDrugs = _context.Drugs.ToList();
+            var allDrugs = _drugRepository.GetAll();
             if (allDrugs.Count < 2) return;
-
-            // Yaygın ilaç etkileşimleri (Gerçek medikal bilgiye dayalı)
             var interactionsToAdd = new List<(string drug1Pattern, string drug2Pattern, string severity, string message)>
             {
                 // Aspirin ve Warfarin etkileşimi
@@ -246,30 +243,27 @@ namespace EczaneOtomasyon.Business
         
         public void SavePrescription(Prescription prescription, List<PrescriptionItem> items)
         {
-            _context.Prescriptions.Add(prescription);
-            _context.SaveChanges(); // Id oluşsun
-
+            _prescriptionRepository.Add(prescription);
             foreach (var item in items)
             {
                 item.PrescriptionId = prescription.Id;
-                _context.PrescriptionItems.Add(item);
+                _prescriptionRepository.AddPrescriptionItem(item);
             }
-            _context.SaveChanges();
         }
 
         public List<Prescription> GetAllPrescriptions()
         {
-            return _context.Prescriptions.OrderByDescending(p => p.Date).ToList();
+            return _prescriptionRepository.GetAll();
         }
 
         public List<PrescriptionItem> GetPrescriptionItems(int prescriptionId)
         {
-            return _context.PrescriptionItems.Where(pi => pi.PrescriptionId == prescriptionId).ToList();
+            return _prescriptionRepository.GetPrescriptionItems(prescriptionId);
         }
 
         public Prescription? GetPrescriptionById(int id)
         {
-            return _context.Prescriptions.FirstOrDefault(p => p.Id == id);
+            return _prescriptionRepository.GetById(id);
         }
 
         // Satış İşlemleri
@@ -292,19 +286,18 @@ namespace EczaneOtomasyon.Business
                 prescription.SaleDate = DateTime.Now;
                 prescription.TotalAmount = totalAmount;
                 prescription.SaleStatus = "Satıldı";
-                _context.SaveChanges();
+                _prescriptionRepository.Update(prescription);
             }
         }
 
         public List<Prescription> GetSoldPrescriptions()
         {
-            return _context.Prescriptions.Where(p => p.IsSold).OrderByDescending(p => p.SaleDate).ToList();
+            return _prescriptionRepository.GetSold();
         }
 
         public List<Prescription> GetPendingPrescriptions()
         {
-            return _context.Prescriptions.Where(p => !p.IsSold).OrderByDescending(p => p.Date).ToList();
+            return _prescriptionRepository.GetPending();
         }
     }
 }
-

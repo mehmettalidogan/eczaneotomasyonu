@@ -9,11 +9,20 @@ namespace EczaneOtomasyon.UI
     public partial class FrmPrescriptionWarnings : DevExpress.XtraEditors.XtraForm
     {
         public bool CanContinue { get; private set; } = false;
+        public List<InteractionWarning>? Warnings { get; set; }
 
-        public FrmPrescriptionWarnings(List<InteractionWarning> warnings)
+        public FrmPrescriptionWarnings()
         {
             InitializeComponent();
-            gridControl1.DataSource = warnings;
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (Warnings != null)
+            {
+                gridControl1.DataSource = Warnings;
+            }
         }
 
         private void btnBack_Click(object sender, EventArgs e)

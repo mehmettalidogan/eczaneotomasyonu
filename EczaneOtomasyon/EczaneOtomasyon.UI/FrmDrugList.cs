@@ -4,16 +4,18 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using DevExpress.XtraEditors;
 using DevExpress.XtraBars;
-using EczaneOtomasyon.Business;
+using EczaneOtomasyon.Business.Interfaces;
 using EczaneOtomasyon.DataAccess;
 using DevExpress.LookAndFeel;
 using System.Drawing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EczaneOtomasyon.UI
 {
     public partial class FrmDrugList : DevExpress.XtraBars.Ribbon.RibbonForm
     {
-        private readonly DrugService _drugService;
+        private readonly IDrugService _drugService;
+        private readonly IServiceProvider _serviceProvider;
         private FrmPrescriptionList? _prescriptionListForm;
         private FrmStockManagement? _stockManagementForm;
         
@@ -21,7 +23,8 @@ namespace EczaneOtomasyon.UI
         private List<Drug>? _cachedDrugs;
         private bool _isDataLoaded = false;
 
-        public FrmDrugList()
+        // Dependency Injection ile servisler alınıyor
+        public FrmDrugList(IDrugService drugService, IServiceProvider serviceProvider)
         {
             // Performans için layout suspend
             this.SuspendLayout();
@@ -34,7 +37,8 @@ namespace EczaneOtomasyon.UI
             // Uygulama ikonunu yükle
             LoadApplicationIcon();
             
-            _drugService = new DrugService();
+            _drugService = drugService;
+            _serviceProvider = serviceProvider;
 
             // GridView double-click event
             gridView1.DoubleClick += GridView1_DoubleClick;
@@ -140,7 +144,7 @@ namespace EczaneOtomasyon.UI
                 // Reçete listesi formunu oluştur ve embed et (sadece ilk seferde)
                 if (_prescriptionListForm == null || _prescriptionListForm.IsDisposed)
                 {
-                    _prescriptionListForm = new FrmPrescriptionList();
+                    _prescriptionListForm = _serviceProvider.GetRequiredService<FrmPrescriptionList>();
                     _prescriptionListForm.TopLevel = false;
                     _prescriptionListForm.FormBorderStyle = FormBorderStyle.None;
                     _prescriptionListForm.Dock = DockStyle.Fill;
@@ -175,7 +179,7 @@ namespace EczaneOtomasyon.UI
                 // Stok yönetimi formunu oluştur ve embed et (sadece ilk seferde)
                 if (_stockManagementForm == null || _stockManagementForm.IsDisposed)
                 {
-                    _stockManagementForm = new FrmStockManagement();
+                    _stockManagementForm = _serviceProvider.GetRequiredService<FrmStockManagement>();
                     _stockManagementForm.TopLevel = false;
                     _stockManagementForm.FormBorderStyle = FormBorderStyle.None;
                     _stockManagementForm.Dock = DockStyle.Fill;
@@ -207,10 +211,10 @@ namespace EczaneOtomasyon.UI
                 var selectedRow = view.GetFocusedRow() as Drug;
                 if (selectedRow != null)
                 {
-                    using (var detailsForm = new FrmDrugDetails(selectedRow))
-                    {
-                        detailsForm.ShowDialog();
-                    }
+                    var detailsForm = _serviceProvider.GetRequiredService<FrmDrugDetails>();
+                    detailsForm.Drug = selectedRow;
+                    detailsForm.ShowDialog();
+                    detailsForm.Dispose();
                 }
             }
         }
@@ -260,23 +264,22 @@ namespace EczaneOtomasyon.UI
 
         private void btnAdd_ItemClick(object sender, ItemClickEventArgs e)
         {
-            using (var frm = new FrmDrugEdit())
+            var frm = _serviceProvider.GetRequiredService<FrmDrugEdit>();
+            if (frm.ShowDialog() == DialogResult.OK)
             {
-                if (frm.ShowDialog() == DialogResult.OK)
+                try
                 {
-                    try
-                    {
-                        _drugService.Add(frm.Drug);
-                        _isDataLoaded = false; // Cache'i invalidate et
-                        LoadData();
-                        UpdateStatistics();
-                    }
-                    catch (Exception ex)
-                    {
-                        XtraMessageBox.Show($"Hata: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    _drugService.Add(frm.Drug);
+                    _isDataLoaded = false; // Cache'i invalidate et
+                    LoadData();
+                    UpdateStatistics();
+                }
+                catch (Exception ex)
+                {
+                    XtraMessageBox.Show($"Hata: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            frm.Dispose();
         }
 
         private void btnEdit_ItemClick(object sender, ItemClickEventArgs e)
@@ -284,24 +287,23 @@ namespace EczaneOtomasyon.UI
             var selectedRow = gridView1.GetFocusedRow() as Drug;
             if (selectedRow == null) return;
 
-            using (var frm = new FrmDrugEdit())
+            var frm = _serviceProvider.GetRequiredService<FrmDrugEdit>();
+            frm.Drug = selectedRow; 
+            if (frm.ShowDialog() == DialogResult.OK)
             {
-                frm.Drug = selectedRow; 
-                if (frm.ShowDialog() == DialogResult.OK)
+                try
                 {
-                    try
-                    {
-                        _drugService.Update(frm.Drug);
-                        _isDataLoaded = false; // Cache'i invalidate et
-                        LoadData();
-                        UpdateStatistics();
-                    }
-                    catch (Exception ex)
-                    {
-                        XtraMessageBox.Show($"Hata: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    _drugService.Update(frm.Drug);
+                    _isDataLoaded = false; // Cache'i invalidate et
+                    LoadData();
+                    UpdateStatistics();
+                }
+                catch (Exception ex)
+                {
+                    XtraMessageBox.Show($"Hata: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            frm.Dispose();
         }
 
         private void btnDelete_ItemClick(object sender, ItemClickEventArgs e)
@@ -355,17 +357,16 @@ namespace EczaneOtomasyon.UI
 
         private void btnNewPrescription_ItemClick(object sender, ItemClickEventArgs e)
         {
-            using (var frm = new FrmPrescriptionEdit())
+            var frm = _serviceProvider.GetRequiredService<FrmPrescriptionEdit>();
+            if (frm.ShowDialog() == DialogResult.OK)
             {
-                if (frm.ShowDialog() == DialogResult.OK)
+                // Reçete eklendikten sonra listeyi yenile
+                if (_prescriptionListForm != null && !_prescriptionListForm.IsDisposed)
                 {
-                    // Reçete eklendikten sonra listeyi yenile
-                    if (_prescriptionListForm != null && !_prescriptionListForm.IsDisposed)
-                    {
-                        _prescriptionListForm.RefreshData(); // Close yerine refresh
-                    }
+                    _prescriptionListForm.RefreshData(); // Close yerine refresh
                 }
             }
+            frm.Dispose();
         }
 
         private void btnPrescriptionList_ItemClick(object sender, ItemClickEventArgs e)

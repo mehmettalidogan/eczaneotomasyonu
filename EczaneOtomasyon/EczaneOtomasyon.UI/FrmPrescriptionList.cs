@@ -5,22 +5,34 @@ using System.Windows.Forms;
 using System.Drawing.Printing;
 using DevExpress.XtraEditors;
 using DevExpress.XtraPrinting;
-using EczaneOtomasyon.Business;
+using EczaneOtomasyon.Business.Interfaces;
 using EczaneOtomasyon.DataAccess;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EczaneOtomasyon.UI
 {
     public partial class FrmPrescriptionList : DevExpress.XtraEditors.XtraForm
     {
-        private readonly PrescriptionChecker _prescriptionChecker;
+        private readonly IPrescriptionChecker _prescriptionChecker;
+        private readonly IDrugService _drugService;
+        private readonly IReceiptPrinter _receiptPrinter;
+        private readonly IServiceProvider _serviceProvider;
         private List<Prescription>? _cachedPrescriptions;
 
-        public FrmPrescriptionList()
+        // Dependency Injection ile servisler alınıyor
+        public FrmPrescriptionList(
+            IPrescriptionChecker prescriptionChecker,
+            IDrugService drugService,
+            IReceiptPrinter receiptPrinter,
+            IServiceProvider serviceProvider)
         {
             this.SuspendLayout();
             
             InitializeComponent();
-            _prescriptionChecker = new PrescriptionChecker();
+            _prescriptionChecker = prescriptionChecker;
+            _drugService = drugService;
+            _receiptPrinter = receiptPrinter;
+            _serviceProvider = serviceProvider;
             ConfigureGridAppearance();
             
             this.ResumeLayout(false);
@@ -112,10 +124,10 @@ namespace EczaneOtomasyon.UI
 
             try
             {
-                using (var frm = new FrmPrescriptionDetails(selectedPrescription.Id))
-                {
-                    frm.ShowDialog();
-                }
+                var frm = _serviceProvider.GetRequiredService<FrmPrescriptionDetails>();
+                frm.PrescriptionId = selectedPrescription.Id;
+                frm.ShowDialog();
+                frm.Dispose();
             }
             catch (Exception ex)
             {
@@ -151,12 +163,11 @@ namespace EczaneOtomasyon.UI
             {
                 // İlaçları getir ve toplam tutarı hesapla
                 var items = _prescriptionChecker.GetPrescriptionItems(selectedPrescription.Id);
-                var drugService = new DrugService();
                 decimal totalAmount = 0;
 
                 foreach (var item in items)
                 {
-                    var drug = drugService.GetAll().FirstOrDefault(d => d.Id == item.DrugId);
+                    var drug = _drugService.GetById(item.DrugId);
                     if (drug != null)
                     {
                         totalAmount += drug.Price;
@@ -212,8 +223,7 @@ namespace EczaneOtomasyon.UI
 
             try
             {
-                var printer = new ReceiptPrinter();
-                printer.PreparePrescriptionReceipt(selectedPrescription.Id);
+                _receiptPrinter.PreparePrescriptionReceipt(selectedPrescription.Id);
                 
                 // Önizleme göster
                 var result = XtraMessageBox.Show(
@@ -228,14 +238,14 @@ namespace EczaneOtomasyon.UI
                 if (result == DialogResult.Yes)
                 {
                     // Doğrudan yazdır
-                    printer.Print();
+                    _receiptPrinter.Print();
                     XtraMessageBox.Show("Fiş yazıcıya gönderildi.", "Başarılı", 
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else if (result == DialogResult.No)
                 {
                     // Önizleme göster
-                    var printDoc = printer.GetPrintDocument();
+                    var printDoc = _receiptPrinter.GetPrintDocument();
                     using (var previewDialog = new PrintPreviewDialog())
                     {
                         previewDialog.Document = printDoc;

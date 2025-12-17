@@ -4,15 +4,18 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
 using EczaneOtomasyon.DataAccess;
+using EczaneOtomasyon.DataAccess.Repositories;
+using EczaneOtomasyon.Business.Interfaces;
 
 namespace EczaneOtomasyon.Business
 {
     /// <summary>
-    /// Fiş ve Fatura yazdırma servisi
+    /// Fiş ve Fatura yazdırma servisi - SOLID prensipleri uygulanmış
     /// </summary>
-    public class ReceiptPrinter
+    public class ReceiptPrinter : IReceiptPrinter
     {
-        private readonly EczaneContext _context;
+        private readonly IPrescriptionRepository _prescriptionRepository;
+        private readonly IDrugRepository _drugRepository;
         private Prescription? _currentPrescription;
         private List<ReceiptItem>? _receiptItems;
         private Font _titleFont = new Font("Arial", 14, FontStyle.Bold);
@@ -20,9 +23,13 @@ namespace EczaneOtomasyon.Business
         private Font _normalFont = new Font("Arial", 9, FontStyle.Regular);
         private Font _smallFont = new Font("Arial", 8, FontStyle.Regular);
 
-        public ReceiptPrinter()
+        // Dependency Injection ile repository'ler alınıyor
+        public ReceiptPrinter(
+            IPrescriptionRepository prescriptionRepository,
+            IDrugRepository drugRepository)
         {
-            _context = new EczaneContext();
+            _prescriptionRepository = prescriptionRepository;
+            _drugRepository = drugRepository;
         }
 
         /// <summary>
@@ -30,19 +37,18 @@ namespace EczaneOtomasyon.Business
         /// </summary>
         public void PreparePrescriptionReceipt(int prescriptionId)
         {
-            _currentPrescription = _context.Prescriptions.FirstOrDefault(p => p.Id == prescriptionId);
+            _currentPrescription = _prescriptionRepository.GetById(prescriptionId);
             
             if (_currentPrescription == null)
                 throw new Exception("Reçete bulunamadı!");
 
-            var items = _context.PrescriptionItems.Where(pi => pi.PrescriptionId == prescriptionId).ToList();
-            var drugService = new DrugService();
+            var items = _prescriptionRepository.GetPrescriptionItems(prescriptionId);
             
             _receiptItems = new List<ReceiptItem>();
             
             foreach (var item in items)
             {
-                var drug = drugService.GetAll().FirstOrDefault(d => d.Id == item.DrugId);
+                var drug = _drugRepository.GetById(item.DrugId);
                 if (drug != null)
                 {
                     _receiptItems.Add(new ReceiptItem

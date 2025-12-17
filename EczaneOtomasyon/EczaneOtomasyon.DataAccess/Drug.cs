@@ -6,12 +6,11 @@ namespace EczaneOtomasyon.DataAccess
         public string Name { get; set; } = string.Empty;
         public string ActiveSubstance { get; set; } = string.Empty;
         public string Form { get; set; } = string.Empty;
-        public int? DosageMg { get; set; }  // Nullable yapıldı - bazı ilaçlarda doz bilgisi mg cinsinden değil
+        public int? DosageMg { get; set; }
         public string Company { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
         public decimal Price { get; set; }
-        public int Stock { get; set; } = 100;  // Başlangıç stok miktarı 100
-        public string Barcode { get; set; } = string.Empty;  // Barkod numarası (EAN-13, Code128, vb.)
+        public int Stock { get; set; } = 100;
+        public string Barcode { get; set; } = string.Empty;
     }
 }
-

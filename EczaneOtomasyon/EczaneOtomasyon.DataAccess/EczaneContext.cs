@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EczaneOtomasyon.DataAccess
 {
-    public class EczaneContext : DbContext
+    public class EczaneContext : DbContext, IEczaneContext
     {
         public DbSet<Drug> Drugs { get; set; }
         public DbSet<Prescription> Prescriptions { get; set; }
@@ -17,7 +17,6 @@ namespace EczaneOtomasyon.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Seed data EnsureSeedData() metodu ile PrescriptionChecker tarafından yönetiliyor
             base.OnModelCreating(modelBuilder);
         }
     }

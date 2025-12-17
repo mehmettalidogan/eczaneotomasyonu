@@ -3,24 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using DevExpress.XtraEditors;
-using EczaneOtomasyon.Business;
+using EczaneOtomasyon.Business.Interfaces;
 using EczaneOtomasyon.DataAccess;
 
 namespace EczaneOtomasyon.UI
 {
     public partial class FrmPrescriptionDetails : DevExpress.XtraEditors.XtraForm
     {
-        private readonly PrescriptionChecker _prescriptionChecker;
-        private readonly DrugService _drugService;
-        private readonly int _prescriptionId;
+        private readonly IPrescriptionChecker _prescriptionChecker;
+        private readonly IDrugService _drugService;
+        public int PrescriptionId { get; set; }
 
-        public FrmPrescriptionDetails(int prescriptionId)
+        // Dependency Injection ile servisler alınıyor
+        public FrmPrescriptionDetails(
+            IPrescriptionChecker prescriptionChecker,
+            IDrugService drugService)
         {
             InitializeComponent();
-            _prescriptionChecker = new PrescriptionChecker();
-            _drugService = new DrugService();
-            _prescriptionId = prescriptionId;
-            
+            _prescriptionChecker = prescriptionChecker;
+            _drugService = drugService;
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
             LoadPrescriptionDetails();
         }
 
@@ -29,7 +35,7 @@ namespace EczaneOtomasyon.UI
             try
             {
                 // Reçete bilgilerini yükle
-                var prescription = _prescriptionChecker.GetPrescriptionById(_prescriptionId);
+                var prescription = _prescriptionChecker.GetPrescriptionById(PrescriptionId);
                 if (prescription == null)
                 {
                     XtraMessageBox.Show("Reçete bulunamadı!", "Hata", 
@@ -46,7 +52,7 @@ namespace EczaneOtomasyon.UI
                 lblDateValue.Text = prescription.Date.ToString("dd.MM.yyyy HH:mm");
 
                 // İlaçları yükle
-                var prescriptionItems = _prescriptionChecker.GetPrescriptionItems(_prescriptionId);
+                var prescriptionItems = _prescriptionChecker.GetPrescriptionItems(PrescriptionId);
                 var allDrugs = _drugService.GetAll();
 
                 var drugDetails = prescriptionItems.Select(item => new
@@ -73,6 +79,7 @@ namespace EczaneOtomasyon.UI
         }
     }
 }
+
 
 
 

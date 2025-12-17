@@ -3,22 +3,24 @@ using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using EczaneOtomasyon.DataAccess;
 using EczaneOtomasyon.Business;
+using EczaneOtomasyon.Business.Interfaces;
+using EczaneOtomasyon.Business.Validation;
 
 namespace EczaneOtomasyon.UI
 {
     public partial class FrmDrugEdit : DevExpress.XtraEditors.XtraForm
     {
         public Drug Drug { get; set; }
-        private readonly BarcodeService _barcodeService;
+        private readonly IBarcodeService _barcodeService;
+        private readonly IValidator<Drug> _drugValidator;
         private bool _isWaitingForBarcode = false;
 
-        public FrmDrugEdit()
+        public FrmDrugEdit(IBarcodeService barcodeService, IValidator<Drug> drugValidator)
         {
             InitializeComponent();
-            Drug = new Drug(); // Default new drug
-            _barcodeService = new BarcodeService();
-            
-            // Barkod okuma eventi
+            Drug = new Drug();
+            _barcodeService = barcodeService;
+            _drugValidator = drugValidator;
             _barcodeService.BarcodeRead += BarcodeService_BarcodeRead;
         }
 
@@ -96,31 +98,32 @@ namespace EczaneOtomasyon.UI
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            // Basic Validation
-            if (string.IsNullOrWhiteSpace(txtName.Text))
+            Drug.Name = txtName.Text.Trim();
+            Drug.ActiveSubstance = txtActiveSubstance.Text.Trim();
+            Drug.Form = txtForm.Text.Trim();
+            Drug.DosageMg = txtDosage.Value > 0 ? (int?)txtDosage.Value : null;
+            Drug.Company = txtCompany.Text.Trim();
+            Drug.Category = txtCategory.Text.Trim();
+            Drug.Price = txtPrice.Value;
+            Drug.Barcode = txtBarcode.Text.Trim();
+
+            var validationResult = _drugValidator.Validate(Drug);
+            if (!validationResult.IsValid)
             {
-                XtraMessageBox.Show("İlaç adı boş olamaz!", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                XtraMessageBox.Show(validationResult.GetErrorMessage(), "Doğrulama Hatası", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Barkod validasyonu
-            if (!string.IsNullOrWhiteSpace(txtBarcode.Text))
+            if (!string.IsNullOrWhiteSpace(Drug.Barcode))
             {
-                if (!_barcodeService.ValidateBarcode(txtBarcode.Text))
+                if (!_barcodeService.ValidateBarcode(Drug.Barcode))
                 {
-                    XtraMessageBox.Show("Geçersiz barkod formatı!", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    XtraMessageBox.Show("Geçersiz barkod formatı!", "Uyarı", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
             }
-
-            Drug.Name = txtName.Text;
-            Drug.ActiveSubstance = txtActiveSubstance.Text;
-            Drug.Form = txtForm.Text;
-            Drug.DosageMg = txtDosage.Value > 0 ? (int?)txtDosage.Value : null; // 0 ise null olarak kaydet
-            Drug.Company = txtCompany.Text;
-            Drug.Category = txtCategory.Text;
-            Drug.Price = txtPrice.Value;
-            Drug.Barcode = txtBarcode.Text.Trim();
 
             this.DialogResult = DialogResult.OK;
             this.Close();

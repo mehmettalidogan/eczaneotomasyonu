@@ -6,25 +6,35 @@ using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using DevExpress.XtraGrid.Views.Grid;
 using EczaneOtomasyon.Business;
+using EczaneOtomasyon.Business.Interfaces;
 using EczaneOtomasyon.DataAccess;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EczaneOtomasyon.UI
 {
     public partial class FrmPrescriptionEdit : DevExpress.XtraEditors.XtraForm
     {
-        private readonly PrescriptionChecker _checker;
-        private readonly DrugService _drugService;
-        private readonly StockService _stockService;
-        private readonly BarcodeService _barcodeService;
+        private readonly IPrescriptionChecker _checker;
+        private readonly IDrugService _drugService;
+        private readonly IStockService _stockService;
+        private readonly IBarcodeService _barcodeService;
+        private readonly IServiceProvider _serviceProvider;
         private BindingList<PrescriptionItemDto> _items;
 
-        public FrmPrescriptionEdit()
+        // Dependency Injection ile servisler alınıyor
+        public FrmPrescriptionEdit(
+            IPrescriptionChecker checker,
+            IDrugService drugService,
+            IStockService stockService,
+            IBarcodeService barcodeService,
+            IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            _checker = new PrescriptionChecker();
-            _drugService = new DrugService();
-            _stockService = new StockService();
-            _barcodeService = new BarcodeService();
+            _checker = checker;
+            _drugService = drugService;
+            _stockService = stockService;
+            _barcodeService = barcodeService;
+            _serviceProvider = serviceProvider;
             _items = new BindingList<PrescriptionItemDto>();
             
             // Seed Data (İlk kullanımda tablo boşsa doldurur)
@@ -224,11 +234,15 @@ namespace EczaneOtomasyon.UI
             // 3. Uyarı varsa göster
             if (allWarnings.Count > 0)
             {
-                using (var frmWarn = new FrmPrescriptionWarnings(allWarnings))
+                var frmWarn = _serviceProvider.GetRequiredService<FrmPrescriptionWarnings>();
+                frmWarn.Warnings = allWarnings;
+                frmWarn.ShowDialog();
+                if (!frmWarn.CanContinue)
                 {
-                    frmWarn.ShowDialog();
-                    if (!frmWarn.CanContinue) return;
+                    frmWarn.Dispose();
+                    return;
                 }
+                frmWarn.Dispose();
             }
 
             // 4. Kaydet

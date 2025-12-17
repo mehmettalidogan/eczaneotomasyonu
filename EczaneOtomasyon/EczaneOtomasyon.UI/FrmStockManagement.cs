@@ -4,25 +4,30 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using DevExpress.XtraEditors;
 using EczaneOtomasyon.Business;
+using EczaneOtomasyon.Business.Interfaces;
 using EczaneOtomasyon.DataAccess;
 
 namespace EczaneOtomasyon.UI
 {
     public partial class FrmStockManagement : XtraForm
     {
-        private readonly StockService _stockService;
-        private readonly DrugService _drugService;
-        private readonly BarcodeService _barcodeService;
+        private readonly IStockService _stockService;
+        private readonly IDrugService _drugService;
+        private readonly IBarcodeService _barcodeService;
         private List<Drug>? _cachedDrugs;
 
-        public FrmStockManagement()
+        // Dependency Injection ile servisler alınıyor
+        public FrmStockManagement(
+            IStockService stockService,
+            IDrugService drugService,
+            IBarcodeService barcodeService)
         {
             this.SuspendLayout();
             
             InitializeComponent();
-            _stockService = new StockService();
-            _drugService = new DrugService();
-            _barcodeService = new BarcodeService();
+            _stockService = stockService;
+            _drugService = drugService;
+            _barcodeService = barcodeService;
             
             this.ResumeLayout(false);
             
