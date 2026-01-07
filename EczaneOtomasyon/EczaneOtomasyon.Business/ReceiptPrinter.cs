@@ -18,10 +18,6 @@ namespace EczaneOtomasyon.Business
         private readonly IDrugRepository _drugRepository;
         private Prescription? _currentPrescription;
         private List<ReceiptItem>? _receiptItems;
-        private Font _titleFont = new Font("Arial", 14, FontStyle.Bold);
-        private Font _headerFont = new Font("Arial", 10, FontStyle.Bold);
-        private Font _normalFont = new Font("Arial", 9, FontStyle.Regular);
-        private Font _smallFont = new Font("Arial", 8, FontStyle.Regular);
 
         // Dependency Injection ile repository'ler alınıyor
         public ReceiptPrinter(
@@ -104,20 +100,26 @@ namespace EczaneOtomasyon.Business
             if (e.Graphics == null || _currentPrescription == null || _receiptItems == null)
                 return;
 
+            // Font tanımlamaları metod içinde yapılıyor (kod standartlarına uygun)
+            Font titleFont = new Font("Arial", 14, FontStyle.Bold);
+            Font headerFont = new Font("Arial", 10, FontStyle.Bold);
+            Font normalFont = new Font("Arial", 9, FontStyle.Regular);
+            Font smallFont = new Font("Arial", 8, FontStyle.Regular);
+
             Graphics graphics = e.Graphics;
             float yPos = 20;
             float leftMargin = 50;
             float rightMargin = e.PageBounds.Width - 50;
 
             // Logo/Başlık
-            graphics.DrawString("ECZANE OTOMASYON SİSTEMİ", _titleFont, Brushes.Black, leftMargin, yPos);
+            graphics.DrawString("ECZANE OTOMASYON SİSTEMİ", titleFont, Brushes.Black, leftMargin, yPos);
             yPos += 30;
 
-            graphics.DrawString("Adres: Örnek Mahalle, No: 123", _smallFont, Brushes.Black, leftMargin, yPos);
+            graphics.DrawString("Adres: Örnek Mahalle, No: 123", smallFont, Brushes.Black, leftMargin, yPos);
             yPos += 15;
-            graphics.DrawString("Tel: 0212 555 1234", _smallFont, Brushes.Black, leftMargin, yPos);
+            graphics.DrawString("Tel: 0212 555 1234", smallFont, Brushes.Black, leftMargin, yPos);
             yPos += 15;
-            graphics.DrawString("Vergi No: 1234567890", _smallFont, Brushes.Black, leftMargin, yPos);
+            graphics.DrawString("Vergi No: 1234567890", smallFont, Brushes.Black, leftMargin, yPos);
             yPos += 25;
 
             // Çizgi
@@ -125,27 +127,27 @@ namespace EczaneOtomasyon.Business
             yPos += 10;
 
             // Fiş Bilgileri
-            graphics.DrawString("FİŞ", _headerFont, Brushes.Black, leftMargin, yPos);
+            graphics.DrawString("FİŞ", headerFont, Brushes.Black, leftMargin, yPos);
             yPos += 20;
 
-            graphics.DrawString($"Fiş No: {_currentPrescription.Id}", _normalFont, Brushes.Black, leftMargin, yPos);
+            graphics.DrawString($"Fiş No: {_currentPrescription.Id}", normalFont, Brushes.Black, leftMargin, yPos);
             yPos += 15;
 
             graphics.DrawString($"Tarih: {_currentPrescription.SaleDate?.ToString("dd.MM.yyyy HH:mm") ?? _currentPrescription.Date.ToString("dd.MM.yyyy HH:mm")}", 
-                _normalFont, Brushes.Black, leftMargin, yPos);
+                normalFont, Brushes.Black, leftMargin, yPos);
             yPos += 15;
 
             if (!string.IsNullOrEmpty(_currentPrescription.PrescriptionNumber))
             {
-                graphics.DrawString($"Reçete No: {_currentPrescription.PrescriptionNumber}", _normalFont, Brushes.Black, leftMargin, yPos);
+                graphics.DrawString($"Reçete No: {_currentPrescription.PrescriptionNumber}", normalFont, Brushes.Black, leftMargin, yPos);
                 yPos += 15;
             }
 
             graphics.DrawString($"Hasta: {_currentPrescription.PatientName} {_currentPrescription.PatientSurname}", 
-                _normalFont, Brushes.Black, leftMargin, yPos);
+                normalFont, Brushes.Black, leftMargin, yPos);
             yPos += 15;
 
-            graphics.DrawString($"TC No: {_currentPrescription.PatientTC}", _normalFont, Brushes.Black, leftMargin, yPos);
+            graphics.DrawString($"TC No: {_currentPrescription.PatientTC}", normalFont, Brushes.Black, leftMargin, yPos);
             yPos += 25;
 
             // Çizgi
@@ -153,10 +155,10 @@ namespace EczaneOtomasyon.Business
             yPos += 10;
 
             // Ürün Başlıkları
-            graphics.DrawString("Ürün", _headerFont, Brushes.Black, leftMargin, yPos);
-            graphics.DrawString("Adet", _headerFont, Brushes.Black, rightMargin - 150, yPos);
-            graphics.DrawString("Fiyat", _headerFont, Brushes.Black, rightMargin - 100, yPos);
-            graphics.DrawString("Toplam", _headerFont, Brushes.Black, rightMargin - 50, yPos);
+            graphics.DrawString("Ürün", headerFont, Brushes.Black, leftMargin, yPos);
+            graphics.DrawString("Adet", headerFont, Brushes.Black, rightMargin - 150, yPos);
+            graphics.DrawString("Fiyat", headerFont, Brushes.Black, rightMargin - 100, yPos);
+            graphics.DrawString("Toplam", headerFont, Brushes.Black, rightMargin - 50, yPos);
             yPos += 20;
 
             graphics.DrawLine(Pens.Black, leftMargin, yPos, rightMargin, yPos);
@@ -169,10 +171,10 @@ namespace EczaneOtomasyon.Business
                 // Uzun ürün adlarını kes
                 string productName = item.Name.Length > 35 ? item.Name.Substring(0, 35) + "..." : item.Name;
                 
-                graphics.DrawString(productName, _normalFont, Brushes.Black, leftMargin, yPos);
-                graphics.DrawString(item.Quantity.ToString(), _normalFont, Brushes.Black, rightMargin - 150, yPos);
-                graphics.DrawString(item.UnitPrice.ToString("C2"), _normalFont, Brushes.Black, rightMargin - 100, yPos);
-                graphics.DrawString(item.TotalPrice.ToString("C2"), _normalFont, Brushes.Black, rightMargin - 50, yPos);
+                graphics.DrawString(productName, normalFont, Brushes.Black, leftMargin, yPos);
+                graphics.DrawString(item.Quantity.ToString(), normalFont, Brushes.Black, rightMargin - 150, yPos);
+                graphics.DrawString(item.UnitPrice.ToString("C2"), normalFont, Brushes.Black, rightMargin - 100, yPos);
+                graphics.DrawString(item.TotalPrice.ToString("C2"), normalFont, Brushes.Black, rightMargin - 50, yPos);
                 
                 grandTotal += item.TotalPrice;
                 yPos += 20;
@@ -183,8 +185,8 @@ namespace EczaneOtomasyon.Business
             yPos += 10;
 
             // Toplam
-            graphics.DrawString("GENEL TOPLAM:", _headerFont, Brushes.Black, rightMargin - 150, yPos);
-            graphics.DrawString(grandTotal.ToString("C2"), _headerFont, Brushes.Black, rightMargin - 50, yPos);
+            graphics.DrawString("GENEL TOPLAM:", headerFont, Brushes.Black, rightMargin - 150, yPos);
+            graphics.DrawString(grandTotal.ToString("C2"), headerFont, Brushes.Black, rightMargin - 50, yPos);
             yPos += 30;
 
             // Alt bilgi
@@ -192,15 +194,21 @@ namespace EczaneOtomasyon.Business
             yPos += 10;
 
             string footerText = "İYİ GÜNLER DİLERİZ";
-            SizeF footerSize = graphics.MeasureString(footerText, _normalFont);
-            graphics.DrawString(footerText, _normalFont, Brushes.Black, 
+            SizeF footerSize = graphics.MeasureString(footerText, normalFont);
+            graphics.DrawString(footerText, normalFont, Brushes.Black, 
                 (e.PageBounds.Width - footerSize.Width) / 2, yPos);
             yPos += 20;
 
             string dateText = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
-            SizeF dateSize = graphics.MeasureString(dateText, _smallFont);
-            graphics.DrawString(dateText, _smallFont, Brushes.Gray, 
+            SizeF dateSize = graphics.MeasureString(dateText, smallFont);
+            graphics.DrawString(dateText, smallFont, Brushes.Gray, 
                 (e.PageBounds.Width - dateSize.Width) / 2, yPos);
+
+            // Font nesnelerini temizle
+            titleFont.Dispose();
+            headerFont.Dispose();
+            normalFont.Dispose();
+            smallFont.Dispose();
         }
 
         /// <summary>

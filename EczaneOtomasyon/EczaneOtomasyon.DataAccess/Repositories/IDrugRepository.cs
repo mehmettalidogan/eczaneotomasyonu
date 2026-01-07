@@ -2,6 +2,9 @@ using System.Collections.Generic;
 
 namespace EczaneOtomasyon.DataAccess.Repositories
 {
+    /// <summary>
+    /// İlaç veri erişim interface'i
+    /// </summary>
     public interface IDrugRepository
     {
         List<Drug> GetAll();

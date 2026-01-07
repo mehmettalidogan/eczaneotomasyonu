@@ -1,5 +1,8 @@
 namespace EczaneOtomasyon.DataAccess
 {
+    /// <summary>
+    /// İlaç entity sınıfı
+    /// </summary>
     public class Drug
     {
         public int Id { get; set; }
@@ -10,7 +13,8 @@ namespace EczaneOtomasyon.DataAccess
         public string Company { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
         public decimal Price { get; set; }
-        public int Stock { get; set; } = 100;
         public string Barcode { get; set; } = string.Empty;
+        public int Stock { get; set; }
     }
 }
+

@@ -17,6 +17,7 @@ namespace EczaneOtomasyon.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Seed data EnsureSeedData() metodu ile PrescriptionChecker tarafından yönetiliyor
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -6,17 +6,28 @@ using EczaneOtomasyon.Business.Interfaces;
 
 namespace EczaneOtomasyon.Business
 {
+    /// <summary>
+    /// Barkod okuma ve yönetim servisi - Barkod okuyucu entegrasyonu
+    /// </summary>
     public class BarcodeService : IBarcodeService
     {
         private readonly IDrugRepository _drugRepository;
         private string _barcodeBuffer = string.Empty;
         private DateTime _lastKeyPress = DateTime.Now;
 
+        /// <summary>
+        /// BarcodeService constructor - Dependency Injection ile repository alır
+        /// </summary>
+        /// <param name="drugRepository">İlaç repository</param>
         public BarcodeService(IDrugRepository drugRepository)
         {
             _drugRepository = drugRepository;
         }
 
+        /// <summary>
+        /// Barkod okuyucudan gelen tuş vuruşlarını işler
+        /// </summary>
+        /// <param name="key">Basılan tuş</param>
         public void ProcessKeyPress(char key)
         {
             // 100ms'den fazla süre geçtiyse buffer'ı sıfırla
@@ -43,13 +54,25 @@ namespace EczaneOtomasyon.Business
             }
         }
 
+        /// <summary>
+        /// Barkod okunduğunda tetiklenen event
+        /// </summary>
         public event EventHandler<BarcodeReadEventArgs>? BarcodeRead;
 
+        /// <summary>
+        /// BarcodeRead eventini tetikler
+        /// </summary>
+        /// <param name="barcode">Okunan barkod</param>
         protected virtual void OnBarcodeRead(string barcode)
         {
             BarcodeRead?.Invoke(this, new BarcodeReadEventArgs(barcode));
         }
 
+        /// <summary>
+        /// Barkoda göre ilacı bulur
+        /// </summary>
+        /// <param name="barcode">Barkod numarası</param>
+        /// <returns>İlaç nesnesi veya null</returns>
         public Drug? FindDrugByBarcode(string barcode)
         {
             if (string.IsNullOrWhiteSpace(barcode))
@@ -58,6 +81,11 @@ namespace EczaneOtomasyon.Business
             return _drugRepository.GetByBarcode(barcode.Trim());
         }
 
+        /// <summary>
+        /// Barkod formatını doğrular
+        /// </summary>
+        /// <param name="barcode">Barkod numarası</param>
+        /// <returns>Geçerliyse true, değilse false</returns>
         public bool ValidateBarcode(string barcode)
         {
             if (string.IsNullOrWhiteSpace(barcode))
@@ -67,6 +95,11 @@ namespace EczaneOtomasyon.Business
             return barcode.All(c => char.IsLetterOrDigit(c) || c == '-');
         }
 
+        /// <summary>
+        /// Barkod formatını belirler (EAN-13, EAN-8, Code128 vb.)
+        /// </summary>
+        /// <param name="barcode">Barkod numarası</param>
+        /// <returns>Barkod formatı</returns>
         public BarcodeFormat GetBarcodeFormat(string barcode)
         {
             if (string.IsNullOrWhiteSpace(barcode))
@@ -87,6 +120,11 @@ namespace EczaneOtomasyon.Business
             return BarcodeFormat.Unknown;
         }
 
+        /// <summary>
+        /// EAN-13 barkod doğrulaması yapar (checksum kontrolü)
+        /// </summary>
+        /// <param name="barcode">EAN-13 barkod</param>
+        /// <returns>Geçerliyse true, değilse false</returns>
         public bool ValidateEAN13(string barcode)
         {
             if (barcode.Length != 13 || !barcode.All(char.IsDigit))
@@ -103,6 +141,11 @@ namespace EczaneOtomasyon.Business
             return checkDigit == int.Parse(barcode[12].ToString());
         }
 
+        /// <summary>
+        /// İlacın barkodunu günceller
+        /// </summary>
+        /// <param name="drugId">İlaç ID</param>
+        /// <param name="barcode">Yeni barkod</param>
         public void UpdateDrugBarcode(int drugId, string barcode)
         {
             var drug = _drugRepository.GetById(drugId);
@@ -113,6 +156,11 @@ namespace EczaneOtomasyon.Business
             }
         }
 
+        /// <summary>
+        /// İlaç için otomatik barkod üretir
+        /// </summary>
+        /// <param name="drugId">İlaç ID</param>
+        /// <returns>Üretilen barkod</returns>
         public string GenerateBarcode(int drugId)
         {
             // Örnek: "ILC" + 10 haneli ID (sıfır doldurmalı)
@@ -138,7 +186,9 @@ namespace EczaneOtomasyon.Business
         EAN13,      // 13 haneli (yaygın perakende)
         EAN8,       // 8 haneli
         Code128,    // Değişken uzunluk
-        QRCode
+        QRCode      // QR kod
     }
 }
+
+
 

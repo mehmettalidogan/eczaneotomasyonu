@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EczaneOtomasyon.DataAccess
 {
+    /// <summary>
+    /// Database context interface - Dependency Inversion için
+    /// </summary>
     public interface IEczaneContext
     {
         DbSet<Drug> Drugs { get; }

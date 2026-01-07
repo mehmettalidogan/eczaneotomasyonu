@@ -240,7 +240,7 @@
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             },
-            "Microsoft.WindowsDesktop.App": {
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
               "privateAssets": "none"
             }
           },

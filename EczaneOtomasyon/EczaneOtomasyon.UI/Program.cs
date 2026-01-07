@@ -5,8 +5,6 @@ using EczaneOtomasyon.DataAccess.Repositories;
 using EczaneOtomasyon.Business;
 using EczaneOtomasyon.Business.Interfaces;
 using EczaneOtomasyon.Business.Validation;
-using EczaneOtomasyon.Business.Logging;
-using EczaneOtomasyon.UI.ErrorHandling;
 
 namespace EczaneOtomasyon.UI;
 
@@ -20,17 +18,12 @@ static class Program
     [STAThread]
     static void Main()
     {
+        // Performans iyileştirmeleri
         Application.SetHighDpiMode(HighDpiMode.SystemAware);
-        ApplicationConfiguration.Initialize();
         
-        // Global Exception Handler
-        Application.ThreadException += (sender, e) =>
-        {
-            var logger = ServiceProvider?.GetService<ILogger>();
-            logger?.LogCritical("Unhandled Exception", e.Exception);
-            MessageBox.Show($"Beklenmeyen bir hata oluştu:\n{e.Exception.Message}", 
-                "Kritik Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        };
+        // To customize application configuration such as set high DPI settings or default font,
+        // see https://aka.ms/applicationconfiguration.
+        ApplicationConfiguration.Initialize();
         
         // DevExpress için performans ayarları
         DevExpress.XtraEditors.WindowsFormsSettings.LoadApplicationSettings();
@@ -52,16 +45,11 @@ static class Program
                 services.AddScoped<IStockService, StockService>();
                 services.AddScoped<IBarcodeService, BarcodeService>();
                 services.AddScoped<IPrescriptionChecker, PrescriptionChecker>();
-                services.AddScoped<IPrescriptionService, PrescriptionService>();
                 services.AddScoped<IReceiptPrinter, ReceiptPrinter>();
+                services.AddScoped<IPrescriptionService, PrescriptionService>();
                 
                 // Validators
-                services.AddScoped<IValidator<Drug>, DrugValidator>();
                 services.AddScoped<IValidator<Prescription>, PrescriptionValidator>();
-                
-                // Logging & Error Handling
-                services.AddSingleton<ILogger, FileLogger>();
-                services.AddSingleton<GlobalExceptionHandler>();
                 
                 // Forms - Transient olarak kaydedilir (her açılışta yeni instance)
                 services.AddTransient<FrmDrugList>();

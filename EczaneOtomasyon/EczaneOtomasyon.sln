@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EczaneOtomasyon.Business", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EczaneOtomasyon.UI", "EczaneOtomasyon.UI\EczaneOtomasyon.UI.csproj", "{FFBBA122-8C03-401A-A7C2-D08CDF62515B}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "EczaneOtomasyonSetup", "EczaneOtomasyonSetup\EczaneOtomasyonSetup.vdproj", "{A6FA8E0E-CA38-B7EA-DFE8-08DF4A6A813F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,8 +57,17 @@ Global
 		{FFBBA122-8C03-401A-A7C2-D08CDF62515B}.Release|x64.Build.0 = Release|Any CPU
 		{FFBBA122-8C03-401A-A7C2-D08CDF62515B}.Release|x86.ActiveCfg = Release|Any CPU
 		{FFBBA122-8C03-401A-A7C2-D08CDF62515B}.Release|x86.Build.0 = Release|Any CPU
+		{A6FA8E0E-CA38-B7EA-DFE8-08DF4A6A813F}.Debug|Any CPU.ActiveCfg = Debug
+		{A6FA8E0E-CA38-B7EA-DFE8-08DF4A6A813F}.Debug|x64.ActiveCfg = Debug
+		{A6FA8E0E-CA38-B7EA-DFE8-08DF4A6A813F}.Debug|x86.ActiveCfg = Debug
+		{A6FA8E0E-CA38-B7EA-DFE8-08DF4A6A813F}.Release|Any CPU.ActiveCfg = Release
+		{A6FA8E0E-CA38-B7EA-DFE8-08DF4A6A813F}.Release|x64.ActiveCfg = Release
+		{A6FA8E0E-CA38-B7EA-DFE8-08DF4A6A813F}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {52CB2AAA-C371-4F3D-A725-47D4EC1B6FB7}
 	EndGlobalSection
 EndGlobal

@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace EczaneOtomasyon.DataAccess.Repositories
 {
+    /// <summary>
+    /// İlaç veri erişim implementasyonu
+    /// </summary>
     public class DrugRepository : IDrugRepository
     {
         private readonly IEczaneContext _context;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using DevExpress.XtraEditors;
+using DevExpress.XtraPrinting;
 using EczaneOtomasyon.Business;
 using EczaneOtomasyon.Business.Interfaces;
 using EczaneOtomasyon.DataAccess;
@@ -330,6 +331,88 @@ namespace EczaneOtomasyon.UI
             {
                 XtraMessageBox.Show(
                     $"Hata: {ex.Message}",
+                    "Hata",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnExportPdf_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (SaveFileDialog saveDialog = new SaveFileDialog())
+                {
+                    saveDialog.Filter = "PDF Dosyası (*.pdf)|*.pdf";
+                    saveDialog.FileName = $"Stok_Raporu_{DateTime.Now:yyyyMMdd_HHmmss}.pdf";
+                    saveDialog.Title = "PDF Olarak Kaydet";
+
+                    if (saveDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        gridView1.ExportToPdf(saveDialog.FileName);
+                        
+                        var result = XtraMessageBox.Show(
+                            $"Stok raporu başarıyla PDF olarak kaydedildi!\n\n{saveDialog.FileName}\n\nDosyayı açmak ister misiniz?",
+                            "Başarılı",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Information);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                            {
+                                FileName = saveDialog.FileName,
+                                UseShellExecute = true
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show(
+                    $"PDF oluşturulurken hata oluştu: {ex.Message}",
+                    "Hata",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnExportExcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (SaveFileDialog saveDialog = new SaveFileDialog())
+                {
+                    saveDialog.Filter = "Excel Dosyası (*.xlsx)|*.xlsx";
+                    saveDialog.FileName = $"Stok_Raporu_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                    saveDialog.Title = "Excel Olarak Kaydet";
+
+                    if (saveDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        gridView1.ExportToXlsx(saveDialog.FileName);
+                        
+                        var result = XtraMessageBox.Show(
+                            $"Stok raporu başarıyla Excel olarak kaydedildi!\n\n{saveDialog.FileName}\n\nDosyayı açmak ister misiniz?",
+                            "Başarılı",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Information);
+
+                        if (result == DialogResult.Yes)
+                        {
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                            {
+                                FileName = saveDialog.FileName,
+                                UseShellExecute = true
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show(
+                    $"Excel oluşturulurken hata oluştu: {ex.Message}",
                     "Hata",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);

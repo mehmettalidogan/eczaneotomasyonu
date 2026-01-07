@@ -37,6 +37,8 @@ namespace EczaneOtomasyon.UI
             this.btnViewDetails = new DevExpress.XtraEditors.SimpleButton();
             this.btnSellPrescription = new DevExpress.XtraEditors.SimpleButton();
             this.btnPrintReceipt = new DevExpress.XtraEditors.SimpleButton();
+            this.btnExportPdf = new DevExpress.XtraEditors.SimpleButton();
+            this.btnExportExcel = new DevExpress.XtraEditors.SimpleButton();
 
             ((System.ComponentModel.ISupportInitialize)(this.panelTop)).BeginInit();
             this.panelTop.SuspendLayout();
@@ -224,6 +226,8 @@ namespace EczaneOtomasyon.UI
             // 
             // panelBottom
             // 
+            this.panelBottom.Controls.Add(this.btnExportPdf);
+            this.panelBottom.Controls.Add(this.btnExportExcel);
             this.panelBottom.Controls.Add(this.btnClose);
             this.panelBottom.Controls.Add(this.btnViewDetails);
             this.panelBottom.Controls.Add(this.btnPrintReceipt);
@@ -285,6 +289,36 @@ namespace EczaneOtomasyon.UI
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
 
             // 
+            // btnExportPdf
+            // 
+            this.btnExportPdf.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportPdf.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
+            this.btnExportPdf.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.btnExportPdf.Appearance.Options.UseBackColor = true;
+            this.btnExportPdf.Appearance.Options.UseFont = true;
+            this.btnExportPdf.Location = new System.Drawing.Point(20, 15);
+            this.btnExportPdf.Name = "btnExportPdf";
+            this.btnExportPdf.Size = new System.Drawing.Size(150, 30);
+            this.btnExportPdf.TabIndex = 4;
+            this.btnExportPdf.Text = "📄 PDF Rapor";
+            this.btnExportPdf.Click += new System.EventHandler(this.btnExportPdf_Click);
+
+            // 
+            // btnExportExcel
+            // 
+            this.btnExportExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnExportExcel.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.btnExportExcel.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.btnExportExcel.Appearance.Options.UseBackColor = true;
+            this.btnExportExcel.Appearance.Options.UseFont = true;
+            this.btnExportExcel.Location = new System.Drawing.Point(180, 15);
+            this.btnExportExcel.Name = "btnExportExcel";
+            this.btnExportExcel.Size = new System.Drawing.Size(150, 30);
+            this.btnExportExcel.TabIndex = 5;
+            this.btnExportExcel.Text = "📊 Excel Rapor";
+            this.btnExportExcel.Click += new System.EventHandler(this.btnExportExcel_Click);
+
+            // 
             // FrmPrescriptionList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -328,6 +362,8 @@ namespace EczaneOtomasyon.UI
         private DevExpress.XtraEditors.SimpleButton btnClose;
         private DevExpress.XtraEditors.SimpleButton btnSellPrescription;
         private DevExpress.XtraEditors.SimpleButton btnPrintReceipt;
+        private DevExpress.XtraEditors.SimpleButton btnExportPdf;
+        private DevExpress.XtraEditors.SimpleButton btnExportExcel;
     }
 }
 

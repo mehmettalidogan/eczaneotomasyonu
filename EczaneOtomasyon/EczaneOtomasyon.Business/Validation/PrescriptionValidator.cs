@@ -1,34 +1,63 @@
-using System.Text.RegularExpressions;
+using System;
 using EczaneOtomasyon.DataAccess;
 
 namespace EczaneOtomasyon.Business.Validation
 {
+    /// <summary>
+    /// Reçete validator sınıfı
+    /// </summary>
     public class PrescriptionValidator : IValidator<Prescription>
     {
-        public ValidationResult Validate(Prescription prescription)
+        /// <summary>
+        /// Reçeteyi validate eder
+        /// </summary>
+        /// <param name="entity">Validate edilecek reçete</param>
+        /// <returns>Validasyon sonucu</returns>
+        public ValidationResult Validate(Prescription entity)
         {
             var result = new ValidationResult();
 
-            if (string.IsNullOrWhiteSpace(prescription.PrescriptionNumber))
+            if (string.IsNullOrWhiteSpace(entity.PrescriptionNumber))
+            {
                 result.AddError("Reçete numarası boş olamaz.");
+            }
 
-            if (string.IsNullOrWhiteSpace(prescription.PatientName))
+            if (string.IsNullOrWhiteSpace(entity.PatientName))
+            {
                 result.AddError("Hasta adı boş olamaz.");
+            }
 
-            if (string.IsNullOrWhiteSpace(prescription.PatientSurname))
+            if (string.IsNullOrWhiteSpace(entity.PatientSurname))
+            {
                 result.AddError("Hasta soyadı boş olamaz.");
+            }
 
-            if (string.IsNullOrWhiteSpace(prescription.PatientTC) || prescription.PatientTC.Length != 11)
-                result.AddError("TC Kimlik No 11 haneli olmalıdır.");
+            if (string.IsNullOrWhiteSpace(entity.PatientTC) || entity.PatientTC.Length != 11)
+            {
+                result.AddError("Geçerli bir TC Kimlik No giriniz (11 haneli).");
+            }
 
-            if (!string.IsNullOrWhiteSpace(prescription.PatientTC) && !Regex.IsMatch(prescription.PatientTC, @"^\d{11}$"))
-                result.AddError("TC Kimlik No sadece rakamlardan oluşmalıdır.");
+            if (entity.PatientAge < 0 || entity.PatientAge > 150)
+            {
+                result.AddError("Hasta yaşı geçerli değil.");
+            }
 
-            if (prescription.PatientAge <= 0 || prescription.PatientAge > 150)
-                result.AddError("Hasta yaşı geçerli aralıkta olmalıdır (1-150).");
+            if (entity.Date > DateTime.Now.AddDays(1))
+            {
+                result.AddError("Reçete tarihi gelecek bir tarih olamaz.");
+            }
 
             return result;
         }
     }
 }
+
+
+
+
+
+
+
+
+
 

@@ -47,6 +47,9 @@ namespace EczaneOtomasyon.UI
             this.txtBarcodeSearch = new DevExpress.XtraEditors.TextEdit();
             this.btnBarcodeSearch = new DevExpress.XtraEditors.SimpleButton();
             this.labelControl5 = new DevExpress.XtraEditors.LabelControl();
+            this.groupControl5 = new DevExpress.XtraEditors.GroupControl();
+            this.btnExportPdf = new DevExpress.XtraEditors.SimpleButton();
+            this.btnExportExcel = new DevExpress.XtraEditors.SimpleButton();
             this.layoutControlGroup1 = new DevExpress.XtraLayout.LayoutControlGroup();
             this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -66,6 +69,8 @@ namespace EczaneOtomasyon.UI
             ((System.ComponentModel.ISupportInitialize)(this.groupControl4)).BeginInit();
             this.groupControl4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtBarcodeSearch.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.groupControl5)).BeginInit();
+            this.groupControl5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
@@ -178,6 +183,7 @@ namespace EczaneOtomasyon.UI
             // 
             // panelControl1
             // 
+            this.panelControl1.Controls.Add(this.groupControl5);
             this.panelControl1.Controls.Add(this.groupControl4);
             this.panelControl1.Controls.Add(this.groupControl3);
             this.panelControl1.Controls.Add(this.groupControl2);
@@ -236,7 +242,7 @@ namespace EczaneOtomasyon.UI
             // 
             this.groupControl1.Controls.Add(this.lblOutOfStockCount);
             this.groupControl1.Controls.Add(this.labelControl1);
-            this.groupControl1.Location = new System.Drawing.Point(15, 155);
+            this.groupControl1.Location = new System.Drawing.Point(15, 255);
             this.groupControl1.Name = "groupControl1";
             this.groupControl1.Size = new System.Drawing.Size(266, 80);
             this.groupControl1.TabIndex = 4;
@@ -271,7 +277,7 @@ namespace EczaneOtomasyon.UI
             // 
             this.groupControl2.Controls.Add(this.lblLowStockCount);
             this.groupControl2.Controls.Add(this.labelControl3);
-            this.groupControl2.Location = new System.Drawing.Point(15, 245);
+            this.groupControl2.Location = new System.Drawing.Point(15, 345);
             this.groupControl2.Name = "groupControl2";
             this.groupControl2.Size = new System.Drawing.Size(266, 80);
             this.groupControl2.TabIndex = 5;
@@ -309,7 +315,7 @@ namespace EczaneOtomasyon.UI
             this.groupControl3.Controls.Add(this.btnAddStock);
             this.groupControl3.Controls.Add(this.txtQuantity);
             this.groupControl3.Controls.Add(this.labelControl4);
-            this.groupControl3.Location = new System.Drawing.Point(15, 340);
+            this.groupControl3.Location = new System.Drawing.Point(15, 435);
             this.groupControl3.Name = "groupControl3";
             this.groupControl3.Size = new System.Drawing.Size(266, 180);
             this.groupControl3.TabIndex = 6;
@@ -387,7 +393,7 @@ namespace EczaneOtomasyon.UI
             this.groupControl4.Controls.Add(this.btnBarcodeSearch);
             this.groupControl4.Controls.Add(this.txtBarcodeSearch);
             this.groupControl4.Controls.Add(this.labelControl5);
-            this.groupControl4.Location = new System.Drawing.Point(15, 535);
+            this.groupControl4.Location = new System.Drawing.Point(15, 625);
             this.groupControl4.Name = "groupControl4";
             this.groupControl4.Size = new System.Drawing.Size(266, 120);
             this.groupControl4.TabIndex = 7;
@@ -420,6 +426,45 @@ namespace EczaneOtomasyon.UI
             this.btnBarcodeSearch.TabIndex = 2;
             this.btnBarcodeSearch.Text = "Ara ve Seç";
             this.btnBarcodeSearch.Click += new System.EventHandler(this.btnBarcodeSearch_Click);
+
+            // 
+            // groupControl5
+            // 
+            this.groupControl5.Controls.Add(this.btnExportPdf);
+            this.groupControl5.Controls.Add(this.btnExportExcel);
+            this.groupControl5.Location = new System.Drawing.Point(15, 145);
+            this.groupControl5.Name = "groupControl5";
+            this.groupControl5.Size = new System.Drawing.Size(266, 100);
+            this.groupControl5.TabIndex = 8;
+            this.groupControl5.Text = "Rapor Aktar";
+
+            // 
+            // btnExportPdf
+            // 
+            this.btnExportPdf.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
+            this.btnExportPdf.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.btnExportPdf.Appearance.Options.UseBackColor = true;
+            this.btnExportPdf.Appearance.Options.UseFont = true;
+            this.btnExportPdf.Location = new System.Drawing.Point(15, 35);
+            this.btnExportPdf.Name = "btnExportPdf";
+            this.btnExportPdf.Size = new System.Drawing.Size(236, 28);
+            this.btnExportPdf.TabIndex = 0;
+            this.btnExportPdf.Text = "📄 PDF Olarak Aktar";
+            this.btnExportPdf.Click += new System.EventHandler(this.btnExportPdf_Click);
+
+            // 
+            // btnExportExcel
+            // 
+            this.btnExportExcel.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.btnExportExcel.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold);
+            this.btnExportExcel.Appearance.Options.UseBackColor = true;
+            this.btnExportExcel.Appearance.Options.UseFont = true;
+            this.btnExportExcel.Location = new System.Drawing.Point(15, 65);
+            this.btnExportExcel.Name = "btnExportExcel";
+            this.btnExportExcel.Size = new System.Drawing.Size(236, 28);
+            this.btnExportExcel.TabIndex = 1;
+            this.btnExportExcel.Text = "📊 Excel Olarak Aktar";
+            this.btnExportExcel.Click += new System.EventHandler(this.btnExportExcel_Click);
 
             // 
             // layoutControlGroup1
@@ -482,6 +527,8 @@ namespace EczaneOtomasyon.UI
             this.groupControl4.ResumeLayout(false);
             this.groupControl4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtBarcodeSearch.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.groupControl5)).EndInit();
+            this.groupControl5.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlGroup1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
@@ -521,6 +568,9 @@ namespace EczaneOtomasyon.UI
         private DevExpress.XtraEditors.SimpleButton btnBarcodeSearch;
         private DevExpress.XtraEditors.TextEdit txtBarcodeSearch;
         private DevExpress.XtraEditors.LabelControl labelControl5;
+        private DevExpress.XtraEditors.GroupControl groupControl5;
+        private DevExpress.XtraEditors.SimpleButton btnExportPdf;
+        private DevExpress.XtraEditors.SimpleButton btnExportExcel;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
     }

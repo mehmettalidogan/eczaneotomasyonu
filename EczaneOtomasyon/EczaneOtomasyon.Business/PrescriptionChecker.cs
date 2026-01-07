@@ -7,6 +7,7 @@ using EczaneOtomasyon.Business.Interfaces;
 
 namespace EczaneOtomasyon.Business
 {
+    // DTOs
     public class PrescriptionItemDto
     {
         public int DrugId { get; set; }
@@ -16,17 +17,21 @@ namespace EczaneOtomasyon.Business
 
     public class InteractionWarning
     {
-        public string Type { get; set; } = string.Empty;
-        public string Severity { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty; // "Interaction" or "Dose"
+        public string Severity { get; set; } = string.Empty; // "Low", "Medium", "High"
         public string Message { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// Reçete kontrol servisi - SOLID prensipleri uygulanmış
+    /// </summary>
     public class PrescriptionChecker : IPrescriptionChecker
     {
         private readonly IEczaneContext _context;
         private readonly IPrescriptionRepository _prescriptionRepository;
         private readonly IDrugRepository _drugRepository;
 
+        // Dependency Injection ile repository'ler alınıyor
         public PrescriptionChecker(
             IEczaneContext context,
             IPrescriptionRepository prescriptionRepository,
@@ -35,13 +40,15 @@ namespace EczaneOtomasyon.Business
             _context = context;
             _prescriptionRepository = prescriptionRepository;
             _drugRepository = drugRepository;
-            _context.Database.EnsureCreated();
+            _context.Database.EnsureCreated(); // Tabloların oluştuğundan emin ol
         }
 
         public List<InteractionWarning> CheckInteractions(List<PrescriptionItemDto> items)
         {
             var warnings = new List<InteractionWarning>();
             var drugIds = items.Select(i => i.DrugId).ToList();
+
+            // Veritabanındaki tüm etkileşim kurallarını çek (Performans için sadece ilgili ilaçlar filtrelenebilir)
             var allContraindications = _context.Contraindications.ToList();
 
             for (int i = 0; i < items.Count; i++)
@@ -50,6 +57,8 @@ namespace EczaneOtomasyon.Business
                 {
                     var d1 = items[i];
                     var d2 = items[j];
+
+                    // Çift yönlü kontrol (A-B veya B-A)
                     var match = allContraindications.FirstOrDefault(c => 
                         (c.Drug1Id == d1.DrugId && c.Drug2Id == d2.DrugId) ||
                         (c.Drug1Id == d2.DrugId && c.Drug2Id == d1.DrugId));
@@ -75,10 +84,12 @@ namespace EczaneOtomasyon.Business
 
             foreach (var item in items)
             {
+                // İlgili ilaç için kuralları bul
                 var rules = _context.DoseRules.Where(r => r.DrugId == item.DrugId).ToList();
 
                 foreach (var rule in rules)
                 {
+                    // Yaş Kontrolü
                     if (patientAge >= rule.MinAge && patientAge <= rule.MaxAge)
                     {
                         if (item.DailyDoseMg > rule.MaxDailyDoseMg)
@@ -97,13 +108,18 @@ namespace EczaneOtomasyon.Business
             return warnings;
         }
         
+        // Seed Data Helper (UI'dan çağırıp test verisi oluşturmak için)
         public void EnsureSeedData()
         {
             if (_context.DoseRules.Any() && _context.Contraindications.Any())
-                return;
+            {
+                return; // Zaten veri var
+            }
 
             var allDrugs = _drugRepository.GetAll();
             if (allDrugs.Count < 2) return;
+
+            // Yaygın ilaç etkileşimleri (Gerçek medikal bilgiye dayalı)
             var interactionsToAdd = new List<(string drug1Pattern, string drug2Pattern, string severity, string message)>
             {
                 // Aspirin ve Warfarin etkileşimi
@@ -244,6 +260,7 @@ namespace EczaneOtomasyon.Business
         public void SavePrescription(Prescription prescription, List<PrescriptionItem> items)
         {
             _prescriptionRepository.Add(prescription);
+
             foreach (var item in items)
             {
                 item.PrescriptionId = prescription.Id;
@@ -301,3 +318,4 @@ namespace EczaneOtomasyon.Business
         }
     }
 }
+

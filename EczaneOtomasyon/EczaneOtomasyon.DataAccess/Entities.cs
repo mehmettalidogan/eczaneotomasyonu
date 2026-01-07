@@ -1,7 +1,12 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EczaneOtomasyon.DataAccess
 {
+    /// <summary>
+    /// Reçete entity sınıfı
+    /// </summary>
     public class Prescription
     {
         public int Id { get; set; }
@@ -11,10 +16,10 @@ namespace EczaneOtomasyon.DataAccess
         public string PatientTC { get; set; } = string.Empty;
         public int PatientAge { get; set; }
         public DateTime Date { get; set; }
-        public bool IsSold { get; set; } = false;
+        public bool IsSold { get; set; }
         public DateTime? SaleDate { get; set; }
-        public decimal TotalAmount { get; set; } = 0;
-        public string SaleStatus { get; set; } = "Bekliyor";
+        public decimal TotalAmount { get; set; }
+        public string SaleStatus { get; set; } = string.Empty;
     }
 
     public class PrescriptionItem
@@ -30,7 +35,7 @@ namespace EczaneOtomasyon.DataAccess
         public int Id { get; set; }
         public int Drug1Id { get; set; }
         public int Drug2Id { get; set; }
-        public string Severity { get; set; } = string.Empty;
+        public string Severity { get; set; } = string.Empty; // "Low", "Medium", "High"
         public string Message { get; set; } = string.Empty;
     }
 
@@ -44,3 +49,4 @@ namespace EczaneOtomasyon.DataAccess
         public string Message { get; set; } = string.Empty;
     }
 }
+
